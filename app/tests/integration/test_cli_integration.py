@@ -130,7 +130,6 @@ class TestFieldsCommandIntegration:
         """出力フィールド数と spec 定義数が一致する。"""
         import json as _json
         spec_data = _json.loads(Path(_REAL_SPEC_PATH).read_text(encoding="utf-8"))
-        expected_count = len(spec_data)
 
         result = runner.invoke(app, ["fields", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
