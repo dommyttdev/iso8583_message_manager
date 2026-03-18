@@ -4,7 +4,6 @@ ParseMessageUseCase のユニットテスト。
 TDD: Red Phase — テストを先に作成し、実装前に失敗することを確認する。
 """
 import logging
-from typing import Any, Dict
 from unittest.mock import Mock
 
 import pytest

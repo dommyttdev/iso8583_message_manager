@@ -4,9 +4,6 @@ error_handler のユニットテスト。
 TDD: Red Phase — テストを先に作成し、実装前に失敗することを確認する。
 """
 import logging
-import sys
-from io import StringIO
-from unittest.mock import patch
 
 import pytest
 import typer

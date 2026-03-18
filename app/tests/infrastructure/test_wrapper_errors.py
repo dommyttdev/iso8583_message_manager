@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import patch, mock_open, MagicMock
-import json
 import logging
 from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_manager.core.exceptions import SpecError, MessageEncodeError, MessageDecodeError

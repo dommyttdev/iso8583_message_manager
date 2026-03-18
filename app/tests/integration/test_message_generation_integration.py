@@ -1,4 +1,3 @@
-import pytest
 from pathlib import Path
 from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
 from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter

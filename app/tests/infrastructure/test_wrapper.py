@@ -1,5 +1,3 @@
-import pytest
-import os
 from pathlib import Path
 from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
