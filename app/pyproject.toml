@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-iso8583 = "iso8583_manager.presentation.cli.app:main"
+iso8583-msg-cli = "iso8583_manager.presentation.cli.app:main"
 
 [project.optional-dependencies]
 dev = [
