@@ -1,0 +1,51 @@
+{
+  "2": {
+    "name": "primary_account_number",
+    "description": "Primary Account Number (PAN)",
+    "data_type": "n",
+    "data_enc": "ascii",
+    "len_enc": "ascii",
+    "len_type": 2,
+    "max_len": 19
+  },
+  "3": {
+    "name": "processing_code",
+    "description": "Processing Code",
+    "data_type": "n",
+    "data_enc": "ascii",
+    "len_type": 0,
+    "max_len": 6
+  },
+  "4": {
+    "name": "amount_transaction",
+    "description": "Amount, Transaction",
+    "data_type": "n",
+    "data_enc": "ascii",
+    "len_type": 0,
+    "max_len": 12
+  },
+  "7": {
+    "name": "transmission_date_and_time",
+    "description": "Transmission Date and Time",
+    "data_type": "n",
+    "data_enc": "ascii",
+    "len_type": 0,
+    "max_len": 10
+  },
+  "11": {
+    "name": "systems_trace_audit_number",
+    "description": "Systems Trace Audit Number",
+    "data_type": "n",
+    "data_enc": "ascii",
+    "len_type": 0,
+    "max_len": 6
+  },
+  "39": {
+    "name": "response_code",
+    "description": "Response Code",
+    "data_type": "an",
+    "data_enc": "ascii",
+    "len_type": 0,
+    "max_len": 2
+  }
+}

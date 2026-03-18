@@ -1,0 +1,37 @@
+[project]
+name = "iso8583_manager"
+version = "0.1.0"
+description = "A clean-architecture wrapper for pyiso8583"
+authors = [
+    { name = "Developer" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pyiso8583>=1.0.1",
+    "pydantic>=2.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "mypy>=1.0.0",
+    "ruff>=0.3.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
