@@ -12,6 +12,7 @@ from iso8583_manager.core.models.mti import (
     MtiOrigin,
     MtiVersion,
 )
+from iso8583_manager.core.exceptions import InvalidMtiError
 
 
 # ==============================================================================
@@ -225,35 +226,47 @@ class TestMtiValueObjectProperties:
 
 class TestMtiFromStrValidation:
     def test_empty_string_raises_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("")
 
     def test_too_short_raises_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("200")
 
     def test_too_long_raises_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("00200")
 
     def test_non_digit_all_raises_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("AAAA")
 
     def test_non_digit_first_char_raises_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("A100")
 
     def test_non_digit_second_char_raises_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("0A00")
 
     def test_undefined_class_digit_zero_raises_value_error(self):
         """MtiClass=0 は仕様上未定義。"""
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("0000")
 
-    def test_undefined_version_digit_raises_value_error(self):
+    def test_undefined_version_digit_raises_invalid_mti_error(self):
         """MtiVersion=3 は仕様上未定義。"""
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidMtiError):
             Mti.from_str("3100")
+
+    def test_undefined_function_digit_raises_invalid_mti_error(self):
+        """MTI 3桁目（機能）の未定義値。"""
+        with pytest.raises(InvalidMtiError) as excinfo:
+            Mti.from_str("0150")  # 5 is undefined for MtiFunction
+        assert "MTI 3桁目（機能）" in str(excinfo.value)
+
+    def test_undefined_origin_digit_raises_invalid_mti_error(self):
+        """MTI 4桁目（発生源）の未定義値。"""
+        with pytest.raises(InvalidMtiError) as excinfo:
+            Mti.from_str("0106")  # 6 is undefined for MtiOrigin
+        assert "MTI 4桁目（発生源）" in str(excinfo.value)

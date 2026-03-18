@@ -1,5 +1,8 @@
+import logging
 from iso8583_manager.core.interfaces.iso_ports import IMessageGenerator, IIso8583Model
 from iso8583_manager.core.models.mti import Mti
+
+logger = logging.getLogger(__name__)
 
 class GenerateMessageUseCase:
     """
@@ -22,11 +25,15 @@ class GenerateMessageUseCase:
         Returns:
             エンコードされた ISO 8583 バイト列
         """
-        # 今後の拡張ポイント（前処理、監査ログ出力など）
+        logger.info("ISO 8583 メッセージ生成を開始します (MTI: %s)", mti.to_str())
 
-        # 実際のエンコード処理をアダプターへ委譲
-        encoded_data = self.message_generator.generate(mti, model_data)
-
-        # 今後の拡張ポイント（後処理、永続化など）
-
-        return encoded_data
+        try:
+            # 実際のエンコード処理をアダプターへ委譲
+            encoded_data = self.message_generator.generate(mti, model_data)
+            
+            logger.info("ISO 8583 メッセージ生成が正常に完了しました (bytes: %d)", len(encoded_data))
+            return encoded_data
+        except Exception as e:
+            logger.error("ISO 8583 メッセージ生成中にエラーが発生しました: %s", str(e), exc_info=True)
+            # 再スローして上位層にエラーを伝える
+            raise

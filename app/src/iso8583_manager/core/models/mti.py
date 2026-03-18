@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import dataclasses
 from enum import IntEnum
+from iso8583_manager.core.exceptions import InvalidMtiError
 
 
 class MtiVersion(IntEnum):
@@ -112,14 +113,14 @@ class Mti:
             Mti インスタンス
 
         Raises:
-            ValueError: 文字列が4桁の数字でない場合、またはいずれかの桁が未定義の場合
+            InvalidMtiError: 文字列が4桁の数字でない場合、またはいずれかの桁が未定義の場合
         """
         if len(mti_str) != 4:
-            raise ValueError(
+            raise InvalidMtiError(
                 f"MTI は4桁の数字文字列でなければなりません。受信値: '{mti_str}'"
             )
         if not mti_str.isdigit():
-            raise ValueError(
+            raise InvalidMtiError(
                 f"MTI は数字のみで構成されなければなりません。受信値: '{mti_str}'"
             )
 
@@ -130,28 +131,28 @@ class Mti:
         try:
             version = MtiVersion(version_digit)
         except ValueError:
-            raise ValueError(
+            raise InvalidMtiError(
                 f"MTI 1桁目（バージョン）の値 '{version_digit}' は定義されていません。"
             )
 
         try:
             mti_class = MtiClass(class_digit)
         except ValueError:
-            raise ValueError(
+            raise InvalidMtiError(
                 f"MTI 2桁目（クラス）の値 '{class_digit}' は定義されていません。"
             )
 
         try:
             function = MtiFunction(function_digit)
         except ValueError:
-            raise ValueError(
+            raise InvalidMtiError(
                 f"MTI 3桁目（機能）の値 '{function_digit}' は定義されていません。"
             )
 
         try:
             origin = MtiOrigin(origin_digit)
         except ValueError:
-            raise ValueError(
+            raise InvalidMtiError(
                 f"MTI 4桁目（発生源）の値 '{origin_digit}' は定義されていません。"
             )
 
