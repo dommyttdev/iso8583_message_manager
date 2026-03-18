@@ -139,6 +139,24 @@ class TestGenerateCommandFields:
             result = runner.invoke(app, ["generate", "0200", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
 
+    def test_generate_field_without_equals_exits_1(self) -> None:
+        """'=' を含まない引数 → exit 1。"""
+        result = runner.invoke(app, [
+            "generate", "0200",
+            "no_equals_here",
+            "--spec", _REAL_SPEC_PATH,
+        ])
+        assert result.exit_code == 1
+
+    def test_generate_field_with_empty_key_exits_1(self) -> None:
+        """'=value' のようにキーが空の引数 → exit 1。"""
+        result = runner.invoke(app, [
+            "generate", "0200",
+            "=some_value",
+            "--spec", _REAL_SPEC_PATH,
+        ])
+        assert result.exit_code == 1
+
     def test_generate_field_value_with_equals_sign(self) -> None:
         """値に '=' を含む場合、最初の '=' で分割されて value 側は 'a=b' として扱われる。"""
         with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:

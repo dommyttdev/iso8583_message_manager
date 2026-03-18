@@ -76,6 +76,15 @@ class TestFieldsCommandErrors:
         result = runner.invoke(app, ["fields", "--spec", "/tmp/does_not_exist.json"])
         assert result.exit_code == 2
 
+    def test_fields_invalid_json_content_exits_2(self) -> None:
+        """spec ファイルが JSON として不正な場合は exit 2。"""
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False, encoding="utf-8") as f:
+            f.write("{ invalid json !!!")
+            tmp_path = f.name
+        result = runner.invoke(app, ["fields", "--spec", tmp_path])
+        assert result.exit_code == 2
+
     def test_fields_error_message_in_output(self) -> None:
         result = runner.invoke(app, ["fields", "--spec", "/nonexistent/spec.json"])
         assert result.exit_code != 0
