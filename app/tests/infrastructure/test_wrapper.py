@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_manager.core.models.mti import Mti
 
 def test_generate_and_parse():
     # Setup
@@ -21,8 +22,10 @@ def test_generate_and_parse():
         response_code="00"
     )
     
+    mti = Mti.from_str("0200")
+    
     # Generate
-    raw_message = adapter.generate(mti="0200", model_data=model)
+    raw_message = adapter.generate(mti=mti, model_data=model)
     
     assert isinstance(raw_message, bytearray)
     assert len(raw_message) > 0

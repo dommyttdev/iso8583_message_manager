@@ -4,6 +4,7 @@ import json
 import iso8583
 from iso8583.specs import default_ascii
 from iso8583_manager.core.interfaces.iso_ports import IMessageGenerator, IIso8583Model
+from iso8583_manager.core.models.mti import Mti
 
 class PyIso8583Adapter(IMessageGenerator):
     def __init__(self, spec_json_path: str):
@@ -27,8 +28,8 @@ class PyIso8583Adapter(IMessageGenerator):
             
         return spec
 
-    def generate(self, mti: str, model_data: IIso8583Model) -> bytearray:
-        decoded = {'t': mti}
+    def generate(self, mti: Mti, model_data: IIso8583Model) -> bytearray:
+        decoded = {'t': mti.to_str()}
         # モデルから辞書に変換されたデータエレメントを取得・マージ
         decoded.update(model_data.to_iso_dict())
 

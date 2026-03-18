@@ -1,4 +1,5 @@
 from typing import Protocol, Any, Dict, Type
+from iso8583_manager.core.models.mti import Mti
 
 class IIso8583Model(Protocol):
     """
@@ -25,14 +26,22 @@ class IMessageGenerator(Protocol):
     外部ライブラリ（pyiso8583等）に直接依存せずに扱うためのポート。
     """
     
-    def generate(self, mti: str, model_data: IIso8583Model) -> bytearray:
+    def generate(self, mti: Mti, model_data: IIso8583Model) -> bytearray:
         """
         モデルデータからISO8583バイナリを生成する。
+
+        Args:
+            mti: メッセージタイプID（Value Object）
+            model_data: データエレメントを保持するモデル
         """
         ...
         
     def parse(self, raw_message: bytes, model_cls: Type[IIso8583Model]) -> IIso8583Model:
         """
         ISO8583バイナリをパースし、指定されたモデルのインスタンスとして返す。
+
+        Note:
+            MTI は decoded['t'] として取得できるが、Mti への変換は
+            呼び出し側（ユースケース）が Mti.from_str() で行う責務とする。
         """
         ...

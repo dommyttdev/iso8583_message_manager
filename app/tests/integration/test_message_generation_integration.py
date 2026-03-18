@@ -3,6 +3,7 @@ from pathlib import Path
 from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
 from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_manager.core.models.mti import Mti
 
 def test_integration_generate_and_parse_success():
     """
@@ -27,7 +28,8 @@ def test_integration_generate_and_parse_success():
     )
     
     # 3. ユースケースの実行（ISO 8583 メッセージバイナリの生成）
-    raw_bytes = use_case.execute(mti="0200", model_data=model)
+    mti = Mti.from_str("0200")
+    raw_bytes = use_case.execute(mti=mti, model_data=model)
     
     # 検証：bytearrayとして出力されていること
     assert isinstance(raw_bytes, bytearray)
