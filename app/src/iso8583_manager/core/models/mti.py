@@ -27,6 +27,17 @@ class MtiVersion(IntEnum):
     V2003   = 2  # ISO 8583-1:2003年版
     PRIVATE = 9  # 個社使用
 
+    @property
+    def description(self) -> str:
+        """各バージョンの日本語説明を返す。"""
+        _desc: dict[int, str] = {
+            0: "ISO 8583-1:1987年版",
+            1: "ISO 8583-2:1993年版",
+            2: "ISO 8583-1:2003年版",
+            9: "個社使用",
+        }
+        return _desc[int(self)]
+
 
 class MtiClass(IntEnum):
     """
@@ -43,6 +54,21 @@ class MtiClass(IntEnum):
     FEE                = 7  # 課金
     NETWORK_MANAGEMENT = 8  # ネットワーク管理
 
+    @property
+    def description(self) -> str:
+        """各クラスの日本語説明を返す。"""
+        _desc: dict[int, str] = {
+            1: "オーソリゼーション",
+            2: "ファイナンシャル",
+            3: "ファイル更新",
+            4: "取消",
+            5: "交換",
+            6: "管理",
+            7: "課金",
+            8: "ネットワーク管理",
+        }
+        return _desc[int(self)]
+
 
 class MtiFunction(IntEnum):
     """
@@ -58,6 +84,20 @@ class MtiFunction(IntEnum):
     RESPONSE_ACK    = 8  # 応答の認証
     NEGATIVE_ACK    = 9  # ネガティブな認証
 
+    @property
+    def description(self) -> str:
+        """各機能の日本語説明を返す。"""
+        _desc: dict[int, str] = {
+            0: "要求",
+            1: "要求に対する応答",
+            2: "アドバイス",
+            3: "アドバイスに対する応答",
+            4: "通知",
+            8: "応答の認証",
+            9: "ネガティブな認証",
+        }
+        return _desc[int(self)]
+
 
 class MtiOrigin(IntEnum):
     """
@@ -71,6 +111,19 @@ class MtiOrigin(IntEnum):
     ISSUER_REPEAT   = 3  # イシュア（リピート）
     OTHER           = 4  # その他
     OTHER_REPEAT    = 5  # その他（リピート）
+
+    @property
+    def description(self) -> str:
+        """各発生源の日本語説明を返す。"""
+        _desc: dict[int, str] = {
+            0: "アクワイアラ",
+            1: "アクワイアラ（リピート）",
+            2: "イシュア",
+            3: "イシュア（リピート）",
+            4: "その他",
+            5: "その他（リピート）",
+        }
+        return _desc[int(self)]
 
 
 @dataclasses.dataclass(frozen=True)

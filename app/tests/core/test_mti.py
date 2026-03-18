@@ -270,3 +270,64 @@ class TestMtiFromStrValidation:
         with pytest.raises(InvalidMtiError) as excinfo:
             Mti.from_str("0106")  # 6 is undefined for MtiOrigin
         assert "MTI 4桁目（発生源）" in str(excinfo.value)
+
+
+# ==============================================================================
+# ⑥ description プロパティテスト
+#    各 Enum メンバーが日本語の説明文字列を返すことを保証する。
+# ==============================================================================
+
+class TestMtiVersionDescription:
+    def test_all_members_have_description(self):
+        """全 MtiVersion メンバーが非空の description を持つ。"""
+        for member in MtiVersion:
+            assert isinstance(member.description, str)
+            assert len(member.description) > 0
+
+    def test_description_count_matches_member_count(self):
+        """description の数がメンバー数と一致する。"""
+        descriptions = {member.description for member in MtiVersion}
+        assert len(descriptions) == len(MtiVersion)
+
+    def test_v1987_description_is_str(self):
+        """V1987 の description が str 型。"""
+        assert isinstance(MtiVersion.V1987.description, str)
+
+
+class TestMtiClassDescription:
+    def test_all_members_have_description(self):
+        """全 MtiClass メンバーが非空の description を持つ。"""
+        for member in MtiClass:
+            assert isinstance(member.description, str)
+            assert len(member.description) > 0
+
+    def test_description_count_matches_member_count(self):
+        """description の数がメンバー数と一致する。"""
+        descriptions = {member.description for member in MtiClass}
+        assert len(descriptions) == len(MtiClass)
+
+
+class TestMtiFunctionDescription:
+    def test_all_members_have_description(self):
+        """全 MtiFunction メンバーが非空の description を持つ。"""
+        for member in MtiFunction:
+            assert isinstance(member.description, str)
+            assert len(member.description) > 0
+
+    def test_description_count_matches_member_count(self):
+        """description の数がメンバー数と一致する。"""
+        descriptions = {member.description for member in MtiFunction}
+        assert len(descriptions) == len(MtiFunction)
+
+
+class TestMtiOriginDescription:
+    def test_all_members_have_description(self):
+        """全 MtiOrigin メンバーが非空の description を持つ。"""
+        for member in MtiOrigin:
+            assert isinstance(member.description, str)
+            assert len(member.description) > 0
+
+    def test_description_count_matches_member_count(self):
+        """description の数がメンバー数と一致する。"""
+        descriptions = {member.description for member in MtiOrigin}
+        assert len(descriptions) == len(MtiOrigin)
