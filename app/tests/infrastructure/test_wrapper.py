@@ -31,8 +31,9 @@ def test_generate_and_parse():
     assert len(raw_message) > 0
     
     # Parse back
-    parsed_model = adapter.parse(raw_message, model_cls=Iso8583MessageModel)
-    
+    mti_str, parsed_model = adapter.parse(raw_message, model_cls=Iso8583MessageModel)
+
+    assert mti_str == "0200"
     assert isinstance(parsed_model, Iso8583MessageModel)
     assert parsed_model.primary_account_number == "1234567890123456"
     assert parsed_model.processing_code == "000000"

@@ -36,8 +36,11 @@ def test_integration_generate_and_parse_success():
     assert len(raw_bytes) > 0
     
     # 4. バイト列から再パースしてオブジェクトが復元できるか結合テスト
-    parsed_model = adapter.parse(raw_message=raw_bytes, model_cls=Iso8583MessageModel)
-    
+    mti_str, parsed_model = adapter.parse(raw_message=raw_bytes, model_cls=Iso8583MessageModel)
+
+    # アサーション：MTIが正しく復元されていること
+    assert mti_str == "0200"
+
     # アサーション：入力した値とパース後の値が完全一致するか
     assert parsed_model.primary_account_number == "1234567890123456"
     assert parsed_model.processing_code == "123456"

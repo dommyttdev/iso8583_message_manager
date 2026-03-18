@@ -1,7 +1,7 @@
 import copy
 import json
 import logging
-from typing import Type
+from typing import Any, Type
 
 import iso8583
 from iso8583.specs import default_ascii
@@ -19,7 +19,7 @@ class PyIso8583Adapter(IMessageGenerator):
         self.spec = self._build_spec()
         logger.info("PyIso8583Adapter initialized with spec: %s", spec_json_path)
 
-    def _build_spec(self) -> dict:
+    def _build_spec(self) -> dict[str, Any]:
         """iso8583_fields.jsonからpyiso8583対応のspecを構築する"""
         try:
             with open(self.spec_json_path, "r", encoding="utf-8") as f:
@@ -62,18 +62,19 @@ class PyIso8583Adapter(IMessageGenerator):
             logger.error("ISO 8583 メッセージのエンコードに失敗しました: %s", str(e), exc_info=True)
             raise MessageEncodeError(f"エンコードに失敗しました: {str(e)}") from e
 
-    def parse(self, raw_message: bytes, model_cls: Type[IIso8583Model]) -> IIso8583Model:
+    def parse(self, raw_message: bytes, model_cls: Type[IIso8583Model]) -> tuple[str, IIso8583Model]:
         logger.info("Parsing ISO 8583 message (length: %d)", len(raw_message))
-        
+
         try:
             # pyiso8583でバイト列から辞書にパース
             decoded, _ = iso8583.decode(raw_message, self.spec)
             logger.debug("Decoded ISO dict: %s", decoded)
-            
+
+            mti_str: str = decoded.get("t", "")
             # 不要な 't', 'p' などは from_iso_dict 側で対応付けがなければスキップされる
             model = model_cls.from_iso_dict(decoded)
-            logger.info("Successfully parsed ISO 8583 message into %s", model_cls.__name__)
-            return model
+            logger.info("Successfully parsed ISO 8583 message into %s (MTI: %s)", model_cls.__name__, mti_str)
+            return mti_str, model
         except Exception as e:
             logger.error("ISO 8583 メッセージのデコードに失敗しました: %s", str(e), exc_info=True)
             raise MessageDecodeError(f"デコードに失敗しました: {str(e)}") from e

@@ -36,12 +36,12 @@ class IMessageGenerator(Protocol):
         """
         ...
         
-    def parse(self, raw_message: bytes, model_cls: Type[IIso8583Model]) -> IIso8583Model:
+    def parse(self, raw_message: bytes, model_cls: Type[IIso8583Model]) -> tuple[str, IIso8583Model]:
         """
-        ISO8583バイナリをパースし、指定されたモデルのインスタンスとして返す。
+        ISO8583バイナリをパースし、MTI文字列とモデルインスタンスのタプルを返す。
 
-        Note:
-            MTI は decoded['t'] として取得できるが、Mti への変換は
-            呼び出し側（ユースケース）が Mti.from_str() で行う責務とする。
+        Returns:
+            (mti_str, model): MTI の4桁文字列と、指定されたモデルのインスタンス。
+            mti_str から Mti への変換は呼び出し側（ユースケース）が Mti.from_str() で行う。
         """
         ...

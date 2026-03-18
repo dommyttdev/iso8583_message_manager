@@ -44,15 +44,16 @@ def test_parse_raises_message_decode_error_on_pyiso8583_failure():
 
 def test_logging_output(caplog):
     caplog.set_level(logging.INFO)
-    with patch("builtins.open", mock_open(read_data='{"2": {}}')):
+    # len_type=2 → LLVAR (可変長), max_len=6 → 6バイトの値が有効
+    with patch("builtins.open", mock_open(read_data='{"2": {"len_type": 2, "max_len": 6}}')):
         adapter = PyIso8583Adapter("dummy.json")
-    
+
     assert "PyIso8583Adapter initialized with spec" in caplog.text
 
     mti = Mti(MtiVersion.V1987, MtiClass.FINANCIAL, MtiFunction.REQUEST, MtiOrigin.ACQUIRER)
     model_mock = MagicMock()
     model_mock.to_iso_dict.return_value = {"2": "123456"}
-    
+
     adapter.generate(mti, model_mock)
     assert "Generating ISO 8583 message for MTI: 0200" in caplog.text
     assert "Successfully encoded ISO 8583 message" in caplog.text
