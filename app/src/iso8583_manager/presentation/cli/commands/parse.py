@@ -65,7 +65,10 @@ def parse_command(
 def _resolve_hex_input(hex_arg: Optional[str]) -> str:
     """引数またはstdinからhex文字列を取得する。どちらもなければ ValueError を raise する。"""
     if hex_arg is not None:
-        return hex_arg.strip()
+        stripped = hex_arg.strip()
+        if not stripped:
+            raise ValueError("hex メッセージを引数または標準入力で指定してください。")
+        return stripped
 
     if not sys.stdin.isatty():
         data = sys.stdin.read().strip()
