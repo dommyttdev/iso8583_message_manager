@@ -6,11 +6,17 @@ hex エンコードされたメッセージ (引数または stdin) を受け取
 """
 import logging
 import sys
+from enum import Enum
 from typing import Annotated, Optional
 
 import typer
 
 from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
+
+
+class ParseOutput(str, Enum):
+    json = "json"
+    table = "table"
 from iso8583_manager.presentation.cli.error_handler import handle_error
 from iso8583_manager.presentation.cli.formatters.parse_formatter import (
     print_json,
@@ -26,8 +32,8 @@ def parse_command(
         Optional[str], typer.Argument(help="hexエンコードされたISO 8583メッセージ")
     ] = None,
     output: Annotated[
-        str, typer.Option("--output", "-o", help="出力形式: json / table")
-    ] = "json",
+        ParseOutput, typer.Option("--output", "-o", help="出力形式: json / table")
+    ] = ParseOutput.json,
     spec: Annotated[Optional[str], typer.Option("--spec", help="spec JSONファイルのパス")] = None,
 ) -> None:
     """ISO 8583 メッセージをデコードして出力します。"""
@@ -45,7 +51,7 @@ def parse_command(
         mti, model = use_case.execute(raw_message=raw_bytes, model_cls=Iso8583MessageModel)
 
         # 出力
-        if output == "table":
+        if output == ParseOutput.table:
             print_table(mti, model)
         else:
             print_json(mti, model)

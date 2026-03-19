@@ -6,6 +6,7 @@ MtiVersion / MtiClass / MtiFunction / MtiOrigin の各 enum メンバーから
 """
 import json
 import logging
+from enum import Enum
 from typing import Annotated, Any
 
 import typer
@@ -13,6 +14,11 @@ from rich.console import Console
 from rich.table import Table
 
 from iso8583_manager.core.models.mti import MtiClass, MtiFunction, MtiOrigin, MtiVersion
+
+
+class MtiOutput(str, Enum):
+    table = "table"
+    json = "json"
 
 logger = logging.getLogger(__name__)
 
@@ -26,13 +32,13 @@ _ENUM_GROUPS: list[tuple[str, str, Any]] = [
 
 def mti_types_command(
     output: Annotated[
-        str, typer.Option("--output", "-o", help="出力形式: table / json")
-    ] = "table",
+        MtiOutput, typer.Option("--output", "-o", help="出力形式: table / json")
+    ] = MtiOutput.table,
 ) -> None:
     """サポートされている MTI 種別一覧を表示します。"""
     logger.info("mti-typesコマンド実行: output=%s", output)
 
-    if output == "json":
+    if output == MtiOutput.json:
         _print_json()
     else:
         _print_table()

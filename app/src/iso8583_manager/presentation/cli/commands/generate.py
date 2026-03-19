@@ -5,11 +5,18 @@ MTI (4桁文字列) とフィールド値 (name=value 形式) を受け取り、
 バイナリメッセージを hex / json / binary のいずれかで出力する。
 """
 import logging
+from enum import Enum
 from typing import Annotated, List, Optional
 
 import typer
 
 from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
+
+
+class GenerateOutput(str, Enum):
+    hex = "hex"
+    json = "json"
+    binary = "binary"
 from iso8583_manager.core.models.mti import Mti
 from iso8583_manager.presentation.cli.error_handler import handle_error
 from iso8583_manager.presentation.cli.formatters.generate_formatter import (
@@ -29,8 +36,8 @@ def generate_command(
         typer.Argument(help="フィールド指定 name=value 形式 (例: primary_account_number=1234567890123456)"),
     ] = None,
     output: Annotated[
-        str, typer.Option("--output", "-o", help="出力形式: hex / json / binary")
-    ] = "hex",
+        GenerateOutput, typer.Option("--output", "-o", help="出力形式: hex / json / binary")
+    ] = GenerateOutput.hex,
     spec: Annotated[Optional[str], typer.Option("--spec", help="spec JSONファイルのパス")] = None,
 ) -> None:
     """ISO 8583 メッセージをエンコードして出力します。"""
@@ -51,9 +58,9 @@ def generate_command(
         raw = use_case.execute(mti=mti_obj, model_data=model)
 
         # 出力
-        if output == "json":
+        if output == GenerateOutput.json:
             print_json(mti, raw)
-        elif output == "binary":
+        elif output == GenerateOutput.binary:
             print_binary(raw)
         else:
             print_hex(mti, raw)
