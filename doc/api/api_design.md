@@ -163,7 +163,7 @@ mti.py (enum) ─────────────────┘
 | `app/data/schemas/iso8583_fields.json` | **手動** | フィールド定義の唯一の真実 |
 | `app/src/.../core/models/mti.py` | **手動** | MTI enum の唯一の真実 |
 | `app/data/schemas/openapi_base.yaml` | **手動** | エンドポイント・エラースキーマ等の静的定義（生成スクリプトへの入力） |
-| `doc/api/openapi.yaml` | **自動生成** | 最終的な OpenAPI 仕様（コミット対象） |
+| `src/iso8583_manager/data/schemas/generated/openapi.yaml` | **自動生成** | 最終的な OpenAPI 仕様（コミット対象） |
 | `app/scripts/code_generator/generate_openapi.py` | **手動** | 生成スクリプト |
 
 ### 8.3 自動生成されるセクション

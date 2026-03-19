@@ -103,7 +103,7 @@ tests/contract/
 ```python
 import schemathesis
 
-schema = schemathesis.from_file("doc/api/openapi.yaml", base_url="http://testserver")
+schema = schemathesis.from_file("src/iso8583_manager/data/schemas/generated/openapi.yaml", base_url="http://testserver")
 
 @schema.parametrize()
 def test_api_contract(case):

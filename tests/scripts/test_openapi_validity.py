@@ -14,7 +14,7 @@ APP_DIR = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(APP_DIR / "src"))
 sys.path.insert(0, str(APP_DIR / "scripts" / "code_generator"))
 
-_OUTPUT_YAML = APP_DIR / "doc" / "api" / "openapi.yaml"
+_OUTPUT_YAML = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas" / "generated" / "openapi.yaml"
 _FIELDS_JSON = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas" / "iso8583_fields.json"
 
 
