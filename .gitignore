@@ -162,3 +162,6 @@ poetry.toml
 
 # LSP config files
 pyrightconfig.json
+
+# OpenApi
+src/iso8583_manager/data/schemas/generated/
