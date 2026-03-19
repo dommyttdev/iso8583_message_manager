@@ -95,25 +95,30 @@ tests/contract/
 
 ---
 
-## 5. 契約テスト ⚠️ schemathesis 更新待ち
+## 5. 契約テスト ✅ 完了
 
 **配置:** `tests/contract/test_api_contract.py`
-**依存:** `schemathesis`
+**依存:** `schemathesis>=4.0`
 
 ```python
 import schemathesis
+from schemathesis.core.result import Ok
+from schemathesis.transport.asgi import ASGI_TRANSPORT
 
-schema = schemathesis.from_file("src/iso8583_manager/data/schemas/generated/openapi.yaml", base_url="http://testserver")
+# schemathesis 4.x: ASGI アプリから直接スキーマを読み込む
+schema = schemathesis.openapi.from_asgi("/openapi.json", fastapi_app)
 
-@schema.parametrize()
-def test_api_contract(case):
-    """OpenAPI スキーマに基づいて自動生成されたリクエストで全エンドポイントを検証。"""
-    response = case.call()
-    case.validate_response(response)
+for result in schema.get_all_operations():
+    if not isinstance(result, Ok):
+        continue
+    operation = result.ok()
+    case = schema.make_case(operation=operation)
+    response = ASGI_TRANSPORT.send(case)
+    operation.validate_response(response)
 ```
 
 | テストID | 検証内容 | 状態 |
 |---------|---------|------|
-| CT-01 | 全エンドポイントのレスポンスが OpenAPI スキーマの型定義に準拠 | ⚠️ `schemathesis.from_path()` API 変更で失敗中 |
-| CT-02 | エラーレスポンスが `ErrorResponse` スキーマに準拠 | ⚠️ 同上 |
-| CT-03 | バリデーションエラーレスポンスが `ValidationErrorResponse` スキーマに準拠 | ⚠️ 同上 |
+| CT-01 | 全エンドポイントのレスポンスが OpenAPI スキーマの型定義に準拠 | ✅ |
+| CT-02 | エラーレスポンスが `ErrorResponse` スキーマに準拠 | ✅ |
+| CT-03 | バリデーションエラーレスポンスが `ValidationErrorResponse` スキーマに準拠 | ✅ |
