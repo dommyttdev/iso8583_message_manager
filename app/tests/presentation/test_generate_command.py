@@ -158,17 +158,20 @@ class TestGenerateCommandFields:
         assert result.exit_code == 1
 
     def test_generate_field_value_with_equals_sign(self) -> None:
-        """値に '=' を含む場合、最初の '=' で分割されて value 側は 'a=b' として扱われる。"""
+        """値に '=' を含む場合、最初の '=' で分割されて value 側は '1=2345' として扱われる。
+
+        processing_code は固定長 6 桁のため '1=2345'（6文字）を使用する。
+        """
         with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
             mock_uc = _make_mock_use_case()
             mock_build.return_value = mock_uc
             runner.invoke(app, [
                 "generate", "0200",
-                "processing_code=ab=cd",
+                "processing_code=1=2345",
                 "--spec", _REAL_SPEC_PATH,
             ])
         model: Iso8583MessageModel = mock_uc.execute.call_args[1]["model_data"]
-        assert model.processing_code == "ab=cd"
+        assert model.processing_code == "1=2345"
 
     def test_generate_parametrized_valid_mtis(self) -> None:
         """複数のMTI ("0100","0200","0800") で成功する。"""

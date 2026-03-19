@@ -11,6 +11,8 @@ dependencies = [
     "pydantic>=2.0.0",
     "typer>=0.12.0",
     "rich>=13.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
 ]
 
 [project.scripts]
@@ -20,8 +22,13 @@ iso8583-msg-cli = "iso8583_manager.presentation.cli.app:main"
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    "pytest-mock>=3.0",
     "mypy>=1.0.0",
-    "ruff>=0.3.0"
+    "ruff>=0.3.0",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0",
+    "openapi-spec-validator>=0.7",
+    "schemathesis>=3.0",
 ]
 
 [build-system]
