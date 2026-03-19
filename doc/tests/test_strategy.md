@@ -68,14 +68,14 @@ ruff エラー 0
 | Integration | 14 | ✅ 良好 | CLI 往復・実スペックファイル使用 |
 | Code Generators | 11 + 4 | ✅ 良好 | generate_openapi.py・generate_models.py テスト完備 |
 | OpenAPI バリデーション | 5 | ✅ 良好 | OA-VAL-01〜05 全 PASS |
-| 契約テスト | 1 | ⚠️ 部分的 | schemathesis の API 変更により 1 件失敗中（既知）|
+| 契約テスト | 1 | ✅ 良好 | schemathesis 4.x API（`openapi.from_asgi` / `ASGI_TRANSPORT`）に対応済み |
 | パッケージメタデータ | 5 | ✅ 良好 | optional-dependencies 構造・エントリポイントを検証 |
 
 ### 3.2 既知の未解決事項
 
 | # | 内容 | リスク | 対応方針 |
 |---|------|-------|---------|
-| 1 | `test_api_contract.py` が `schemathesis.from_path()` の API 変更で失敗 | 低（契約テスト自体は設計済み） | schemathesis を最新バージョン対応に更新 |
+| ~~1~~ | ~~`test_api_contract.py` が `schemathesis.from_path()` の API 変更で失敗~~ | — | ✅ 解決済み（schemathesis 4.x 対応） |
 
 ---
 
@@ -243,7 +243,7 @@ tests/
 │   ├── test_generate_openapi.py                           ✅ GEN-OA-01〜11
 │   └── test_openapi_validity.py                           ✅ OA-VAL-01〜05
 ├── contract/
-│   └── test_api_contract.py                               ⚠️ schemathesis API 変更で失敗中
+│   └── test_api_contract.py                               ✅ CT-01〜03（schemathesis 4.x 対応済み）
 ├── integration/
 │   ├── test_cli_integration.py                            ✅
 │   └── test_message_generation_integration.py             ✅
@@ -291,8 +291,8 @@ pytest tests/core/test_package_data.py tests/test_package_metadata.py -v
 | **Phase 2** | `test_wrapper_boundary.py` 追加 | P1 | ✅ 完了 |
 | **Phase 2** | `test_openapi_validity.py` 追加 | P1 | ✅ 完了 |
 | **Phase 3** | API 層実装 + `tests/presentation/api/` 追加 | P1 | ✅ 完了 |
-| **Phase 3** | `tests/contract/` 追加 | P1 | ✅ 完了（schemathesis 更新待ち）|
+| **Phase 3** | `tests/contract/` 追加 | P1 | ✅ 完了 |
 | **Phase 4** | `test_generate_models.py` 追加 | P2 | ✅ 完了 |
 | **Phase 4** | Use Cases 実結合テスト追加 | P2 | ✅ 完了 |
 | **Phase 5** | パッケージング基盤テスト追加 | — | ✅ 完了（新規）|
-| **次期課題** | schemathesis 最新版対応（契約テスト修復） | 低 | 未着手 |
+| **次期課題** | schemathesis 最新版対応（契約テスト修復） | 低 | ✅ 解決済み |
