@@ -41,7 +41,7 @@ pip install -e "app/[dev]"
 iso8583-msg-cli --version   # コマンドが応答すること
 
 # 作業ディレクトリ
-cd iso8583_message_generator/app
+cd iso8583_message_manager
 
 # 環境変数（初期状態）
 unset ISO8583_SPEC_PATH

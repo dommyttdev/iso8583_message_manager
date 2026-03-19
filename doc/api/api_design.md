@@ -131,7 +131,7 @@ schemathesis>=3.0                # 契約テスト（API 実装後）
 
 ```bash
 # 開発サーバー起動
-cd iso8583_message_generator/app/
+cd iso8583_message_manager
 uvicorn iso8583_manager.presentation.api.app:app --reload --port 8000
 
 # 本番起動
@@ -199,7 +199,7 @@ mti.py (enum) ─────────────────┘
 ### 8.5 再生成コマンド
 
 ```bash
-cd iso8583_message_generator/app
+cd iso8583_message_manager
 
 # フィールドを追加・変更した場合は以下を両方実行
 python scripts/code_generator/generate_models.py   # Pydantic モデル

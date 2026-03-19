@@ -255,7 +255,7 @@ tests/
 ## 6. テスト実行コマンド
 
 ```bash
-cd iso8583_message_generator
+cd iso8583_message_manager
 
 # 全テスト
 pytest

@@ -1,7 +1,7 @@
 # このファイルは generate_openapi.py により自動生成されます。
 # 直接編集せず、openapi_base.yaml を編集して再生成してください。
 #
-#   cd iso8583_message_generator/app
+#   cd iso8583_message_manager
 #   python scripts/code_generator/generate_openapi.py
 
 openapi: 3.1.0
