@@ -11,12 +11,12 @@ class Iso8583MessageModel(BaseModel):
     """
     Auto-generated Pydantic model for ISO 8583 Data Elements.
     """
-    primary_account_number: Optional[str] = Field(default=None, description="Primary Account Number (PAN)", max_length=19)
-    processing_code: Optional[str] = Field(default=None, description="Processing Code", max_length=6)
-    amount_transaction: Optional[str] = Field(default=None, description="Amount, Transaction", max_length=12)
-    transmission_date_and_time: Optional[str] = Field(default=None, description="Transmission Date and Time", max_length=10)
-    systems_trace_audit_number: Optional[str] = Field(default=None, description="Systems Trace Audit Number", max_length=6)
-    response_code: Optional[str] = Field(default=None, description="Response Code", max_length=2)
+    primary_account_number: Optional[str] = Field(default=None, description="Primary Account Number (PAN)", min_length=1, max_length=19)
+    processing_code: Optional[str] = Field(default=None, description="Processing Code", min_length=1, max_length=6)
+    amount_transaction: Optional[str] = Field(default=None, description="Amount, Transaction", min_length=1, max_length=12)
+    transmission_date_and_time: Optional[str] = Field(default=None, description="Transmission Date and Time", min_length=1, max_length=10)
+    systems_trace_audit_number: Optional[str] = Field(default=None, description="Systems Trace Audit Number", min_length=1, max_length=6)
+    response_code: Optional[str] = Field(default=None, description="Response Code", min_length=1, max_length=2)
 
     # Property name to ISO Field ID mapping
     field_mapping: ClassVar[Dict[str, str]] = {

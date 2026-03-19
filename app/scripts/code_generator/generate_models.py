@@ -52,10 +52,10 @@ class Iso8583MessageModel(BaseModel):
             max_len = metadata.get("max_len")
             
             # Pydantic Field arguments
-            field_args = [f'description="{desc}"']
+            field_args = [f'description="{desc}"', "min_length=1"]
             if max_len:
                 field_args.append(f"max_length={max_len}")
-                
+
             field_def = f"    {prop_name}: Optional[str] = Field(default=None, {', '.join(field_args)})\n"
             out.write(field_def)
             
