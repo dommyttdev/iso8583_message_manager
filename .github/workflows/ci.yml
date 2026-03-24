@@ -44,8 +44,11 @@ jobs:
       - name: mypy 型チェック
         run: uv run mypy src/
 
+      - name: bandit セキュリティ静的解析
+        run: uv run bandit -r src/ -ll --quiet
+
       - name: pytest + カバレッジ
-        run: uv run pytest --cov=iso8583_types --cov-report=term-missing --cov-fail-under=95
+        run: uv run pytest --cov=iso8583_types --cov-report=term-missing --cov-fail-under=95 --benchmark-disable
 
   # ──────────────────────────────────────────
   # iso8583-core
@@ -78,8 +81,11 @@ jobs:
       - name: mypy 型チェック
         run: uv run mypy src/
 
+      - name: bandit セキュリティ静的解析
+        run: uv run bandit -r src/ -ll --quiet
+
       - name: pytest + カバレッジ
-        run: uv run pytest --cov=iso8583_core --cov-report=term-missing --cov-fail-under=95
+        run: uv run pytest --cov=iso8583_core --cov-report=term-missing --cov-fail-under=95 --benchmark-disable
 
   # ──────────────────────────────────────────
   # api
@@ -111,6 +117,9 @@ jobs:
 
       - name: mypy 型チェック
         run: uv run mypy src/
+
+      - name: bandit セキュリティ静的解析
+        run: uv run bandit -r src/ -ll --quiet
 
       - name: pytest + カバレッジ
         run: uv run pytest --cov=iso8583_api --cov-report=term-missing --cov-fail-under=90
@@ -145,6 +154,9 @@ jobs:
 
       - name: mypy 型チェック
         run: uv run mypy src/
+
+      - name: bandit セキュリティ静的解析
+        run: uv run bandit -r src/ -ll --quiet
 
       - name: pytest + カバレッジ
         run: uv run pytest --cov=iso8583_cli --cov-report=term-missing --cov-fail-under=90
