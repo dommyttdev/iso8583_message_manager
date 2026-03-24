@@ -1,22 +1,20 @@
 """
-iso8583_api GET /health エンドポイントのテスト。
+GET /api/v1/health のルーターユニットテスト。
+
+テスト戦略 doc/api/api_design.md §9.3 API-HLT-01 に対応。
 """
-import pytest
 from fastapi.testclient import TestClient
+
 from iso8583_api.app import app
 
-
-@pytest.fixture()
-def client() -> TestClient:
-    return TestClient(app)
+client = TestClient(app)
 
 
 class TestHealthEndpoint:
-    def test_health_returns_200(self, client: TestClient):
+    def test_api_hlt_01_health_returns_ok(self) -> None:
+        """API-HLT-01: GET /api/v1/health → 200, {"status": "ok"}。"""
         response = client.get("/api/v1/health")
         assert response.status_code == 200
-
-    def test_health_returns_status_ok(self, client: TestClient):
-        response = client.get("/api/v1/health")
         data = response.json()
-        assert data.get("status") == "ok"
+        assert data["status"] == "ok"
+        assert "version" in data

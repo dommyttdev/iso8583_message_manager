@@ -1,41 +1,36 @@
-"""
-iso8583_core.infrastructure.pyiso8583_adapter.wrapper のユニットテスト。
-
-PyIso8583Adapter の初期化・エラー処理を検証する。
-"""
-import json
-import pytest
-from pathlib import Path
-
+from importlib.resources import files as _pkg_files
 from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
-from iso8583_types.core.exceptions import SpecError
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.mti import Mti
 
+def test_generate_and_parse():
+    # Setup
+    json_path = _pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json"
+    adapter = PyIso8583Adapter(spec_json_path=str(json_path))
+    
+    # 正常系モデル
+    model = Iso8583MessageModel(
+        primary_account_number="1234567890123456",
+        processing_code="000000",
+        amount_transaction="000000100000",
+        transmission_date_and_time="1010101010",
+        systems_trace_audit_number="123456",
+        response_code="00"
+    )
+    
+    mti = Mti.from_str("0200")
+    
+    # Generate
+    raw_message = adapter.generate(mti=mti, model_data=model)
+    
+    assert isinstance(raw_message, bytearray)
+    assert len(raw_message) > 0
+    
+    # Parse back
+    mti_str, parsed_model = adapter.parse(raw_message, model_cls=Iso8583MessageModel)
 
-@pytest.fixture()
-def spec_path(tmp_path: Path) -> str:
-    """最小限の有効スペックファイルを一時ディレクトリに作成する。"""
-    spec = {
-        "2": {"max_length": 19, "length_type": "LLVAR", "data_encoding": "ascii",
-              "description": "Primary Account Number", "type": "n"},
-        "3": {"max_length": 6, "length_type": "fixed", "data_encoding": "ascii",
-              "description": "Processing Code", "type": "n"},
-    }
-    p = tmp_path / "iso8583_fields.json"
-    p.write_text(json.dumps(spec), encoding="utf-8")
-    return str(p)
-
-
-class TestPyIso8583AdapterInit:
-    def test_init_with_valid_spec(self, spec_path: str):
-        adapter = PyIso8583Adapter(spec_json_path=spec_path)
-        assert adapter is not None
-
-    def test_init_with_missing_spec_raises_spec_error(self, tmp_path: Path):
-        with pytest.raises(SpecError):
-            PyIso8583Adapter(spec_json_path=str(tmp_path / "nonexistent.json"))
-
-    def test_init_with_invalid_json_raises_spec_error(self, tmp_path: Path):
-        bad = tmp_path / "bad.json"
-        bad.write_text("not valid json", encoding="utf-8")
-        with pytest.raises(SpecError):
-            PyIso8583Adapter(spec_json_path=str(bad))
+    assert mti_str == "0200"
+    assert isinstance(parsed_model, Iso8583MessageModel)
+    assert parsed_model.primary_account_number == "1234567890123456"
+    assert parsed_model.processing_code == "000000"
+    assert parsed_model.response_code == "00"

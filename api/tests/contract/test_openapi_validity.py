@@ -10,11 +10,11 @@ from pathlib import Path
 
 import pytest
 
-APP_DIR = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(APP_DIR / "src"))
-sys.path.insert(0, str(APP_DIR / "scripts" / "code_generator"))
-
-ROOT_DIR = APP_DIR.parent  # d:/Projects/Cards/
+API_DIR = Path(__file__).parent.parent.parent
+ROOT_DIR = API_DIR.parent  # d:/Projects/Cards/
+CORE_DIR = ROOT_DIR / "packages" / "iso8583-core"
+sys.path.insert(0, str(CORE_DIR / "src"))
+sys.path.insert(0, str(CORE_DIR / "scripts" / "code_generator"))
 _CORE_SCHEMAS = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
 _OUTPUT_YAML = _CORE_SCHEMAS / "generated" / "openapi.yaml"
 _FIELDS_JSON = _CORE_SCHEMAS / "iso8583_fields.json"

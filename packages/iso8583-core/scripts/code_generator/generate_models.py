@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 # Paths
-ROOT_DIR = Path(__file__).parent.parent.parent.parent  # d:/Projects/Cards/
+ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent  # d:/Projects/Cards/
 SCHEMAS_DIR = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
 GENERATED_DIR = ROOT_DIR / "packages" / "iso8583-types" / "src" / "iso8583_types" / "core" / "models" / "generated"
 

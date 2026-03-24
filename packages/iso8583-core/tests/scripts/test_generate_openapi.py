@@ -25,7 +25,7 @@ from generate_openapi import (  # noqa: E402
     generate_openapi,
 )
 
-ROOT_DIR = APP_DIR.parent  # d:/Projects/Cards/
+ROOT_DIR = APP_DIR.parent.parent  # d:/Projects/Cards/
 _CORE_SCHEMAS = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
 _FIELDS_JSON = _CORE_SCHEMAS / "iso8583_fields.json"
 _BASE_YAML = _CORE_SCHEMAS / "openapi_base.yaml"

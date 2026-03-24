@@ -34,8 +34,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-APP_DIR = Path(__file__).parent.parent.parent          # iso8583_message_manager/
-ROOT_DIR = APP_DIR.parent                              # d:/Projects/Cards/
+ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent  # d:/Projects/Cards/
 
 # mti.py を直接インポートするため src/ をパスに追加（venv 不要）
 sys.path.insert(0, str(ROOT_DIR / "packages" / "iso8583-types" / "src"))

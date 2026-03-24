@@ -2,7 +2,7 @@
 統合エントリポイント。
 
 iso8583-msg cli|api|web コマンドでモードを選択する。
-python -m iso8583_manager でも起動可能。
+python -m iso8583_cli でも起動可能。
 """
 import logging
 
@@ -32,7 +32,7 @@ def run_api(
     except ImportError:
         typer.echo(
             "エラー: REST API の起動には追加パッケージが必要です。\n"
-            "  pip install iso8583_manager[api]",
+            "  pip install iso8583_cli[api]",
             err=True,
         )
         raise typer.Exit(code=1)
@@ -56,7 +56,7 @@ def run_web(
     except ImportError:
         typer.echo(
             "エラー: Web UI の起動には追加パッケージが必要です。\n"
-            "  pip install iso8583_manager[web]",
+            "  pip install iso8583_cli[web]",
             err=True,
         )
         raise typer.Exit(code=1)
