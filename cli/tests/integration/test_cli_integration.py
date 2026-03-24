@@ -187,3 +187,104 @@ class TestErrorHandlingIntegration:
             "generate", "0200", "--spec", "/nonexistent/spec.json"
         ])
         assert result.exit_code == 2
+
+
+# ==============================================================================
+# 不正 MTI が全レイヤーで拒否されること（クロスレイヤー検証）
+# ==============================================================================
+
+class TestInvalidMtiRejectedCrossLayer:
+    """不正 MTI が cli → core → types の全レイヤーで正しく拒否されることを検証する。"""
+
+    def test_invalid_mti_version_exits_1(self) -> None:
+        """未定義バージョン (3200) → types 層で拒否 → exit 1"""
+        result = runner.invoke(app, [
+            "generate", "3200", "--spec", _REAL_SPEC_PATH,
+        ])
+        assert result.exit_code == 1
+
+    def test_invalid_mti_function_exits_1(self) -> None:
+        """未定義機能 (0150) → types 層で拒否 → exit 1"""
+        result = runner.invoke(app, [
+            "generate", "0150", "--spec", _REAL_SPEC_PATH,
+        ])
+        assert result.exit_code == 1
+
+    def test_invalid_mti_origin_exits_1(self) -> None:
+        """未定義発生源 (0106) → types 層で拒否 → exit 1"""
+        result = runner.invoke(app, [
+            "generate", "0106", "--spec", _REAL_SPEC_PATH,
+        ])
+        assert result.exit_code == 1
+
+    def test_all_invalid_mti_produce_no_hex_output(self) -> None:
+        """不正 MTI では有効な hex メッセージが出力されないこと"""
+        for mti_str in ["0900", "3200", "0150", "0106"]:
+            result = runner.invoke(app, [
+                "generate", mti_str, "--spec", _REAL_SPEC_PATH,
+            ])
+            assert result.exit_code == 1, f"MTI {mti_str}: exit_code が 1 でない"
+            # 正常な hex メッセージ（偶数桁の純粋な hex 文字列）が出力されていないこと
+            output = result.output.strip()
+            try:
+                bytes.fromhex(output)
+                raise AssertionError(f"MTI {mti_str}: エラー時に有効な hex が出力された")
+            except ValueError:
+                pass  # 期待通り（hex としてパースできない = エラーメッセージが出力された）
+
+
+# ==============================================================================
+# 全フィールドを使用した最大メッセージの E2E
+# ==============================================================================
+
+class TestAllFieldsE2E:
+    """全フィールドを同時使用した最大メッセージの CLI E2E 検証。"""
+
+    def test_all_fields_generate_and_parse_roundtrip(self) -> None:
+        """全フィールドが generate → parse で欠損なく往復すること"""
+        all_fields = [
+            "primary_account_number=1234567890123456",
+            "processing_code=123456",
+            "amount_transaction=000000001000",
+            "transmission_date_and_time=1234567890",
+            "systems_trace_audit_number=111222",
+            "response_code=00",
+        ]
+        gen_result = runner.invoke(app, [
+            "generate", "0200", *all_fields, "--spec", _REAL_SPEC_PATH,
+        ])
+        assert gen_result.exit_code == 0
+        hex_str = gen_result.output.strip()
+
+        parse_result = runner.invoke(app, ["parse", hex_str, "--spec", _REAL_SPEC_PATH])
+        assert parse_result.exit_code == 0
+        data = json.loads(parse_result.output)
+
+        assert data["mti"] == "0200"
+        assert data["fields"]["primary_account_number"] == "1234567890123456"
+        assert data["fields"]["processing_code"] == "123456"
+        assert data["fields"]["amount_transaction"] == "000000001000"
+        assert data["fields"]["transmission_date_and_time"] == "1234567890"
+        assert data["fields"]["systems_trace_audit_number"] == "111222"
+        assert data["fields"]["response_code"] == "00"
+
+    def test_all_fields_message_larger_than_single_field(self) -> None:
+        """全フィールド使用時のメッセージが単一フィールドより大きいこと"""
+        single = runner.invoke(app, [
+            "generate", "0200",
+            "primary_account_number=1234567890123456",
+            "--spec", _REAL_SPEC_PATH,
+        ])
+        full = runner.invoke(app, [
+            "generate", "0200",
+            "primary_account_number=1234567890123456",
+            "processing_code=123456",
+            "amount_transaction=000000001000",
+            "transmission_date_and_time=1234567890",
+            "systems_trace_audit_number=111222",
+            "response_code=00",
+            "--spec", _REAL_SPEC_PATH,
+        ])
+        assert single.exit_code == 0
+        assert full.exit_code == 0
+        assert len(bytes.fromhex(full.output.strip())) > len(bytes.fromhex(single.output.strip()))
