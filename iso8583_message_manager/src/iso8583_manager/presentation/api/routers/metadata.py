@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends
 
-from iso8583_manager.core.models.mti import MtiClass, MtiFunction, MtiOrigin, MtiVersion
+from iso8583_types.core.models.mti import MtiClass, MtiFunction, MtiOrigin, MtiVersion
 from iso8583_manager.presentation.container import _resolve_spec_path
 
 logger = logging.getLogger(__name__)

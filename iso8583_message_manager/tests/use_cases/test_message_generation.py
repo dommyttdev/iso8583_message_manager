@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import Mock
 from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
-from iso8583_manager.core.interfaces.iso_ports import IMessageGenerator
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_manager.core.models.mti import Mti
+from iso8583_types.core.interfaces.iso_ports import IMessageGenerator
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.mti import Mti
 
 def test_generate_message_usecase():
     # インフラの実装の代わりにMockを注入 (DIPを利用)
@@ -40,7 +40,7 @@ def test_generate_message_with_raw_string_type_error():
 
 def test_generate_message_logging_and_error_handling(caplog):
     import logging
-    from iso8583_manager.core.exceptions import MessageEncodeError
+    from iso8583_types.core.exceptions import MessageEncodeError
     
     caplog.set_level(logging.INFO)
     mock_adapter = Mock(spec=IMessageGenerator)

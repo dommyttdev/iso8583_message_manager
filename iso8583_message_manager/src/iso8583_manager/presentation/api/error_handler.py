@@ -9,7 +9,7 @@ import logging
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from iso8583_manager.core.exceptions import (
+from iso8583_types.core.exceptions import (
     Iso8583Error,
     InvalidMtiError,
     MessageDecodeError,

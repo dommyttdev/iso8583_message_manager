@@ -9,8 +9,8 @@ from unittest.mock import MagicMock, patch
 
 from typer.testing import CliRunner
 
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_manager.core.models.mti import Mti
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.mti import Mti
 from iso8583_manager.presentation.cli.app import app
 
 runner = CliRunner()
@@ -169,7 +169,7 @@ class TestParseCommandErrors:
         assert result.exit_code == 1
 
     def test_parse_decode_error_exits_4(self) -> None:
-        from iso8583_manager.core.exceptions import MessageDecodeError
+        from iso8583_types.core.exceptions import MessageDecodeError
         with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
             mock_uc = MagicMock()
             mock_uc.execute.side_effect = MessageDecodeError("デコード失敗")

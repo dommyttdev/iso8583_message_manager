@@ -38,7 +38,7 @@ APP_DIR = Path(__file__).parent.parent.parent          # iso8583_message_manager
 
 # mti.py を直接インポートするため src/ をパスに追加（venv 不要）
 sys.path.insert(0, str(APP_DIR / "src"))
-from iso8583_manager.core.models.mti import MtiVersion, MtiClass, MtiFunction, MtiOrigin  # noqa: E402
+from iso8583_types.core.models.mti import MtiVersion, MtiClass, MtiFunction, MtiOrigin  # noqa: E402
 SCHEMAS_DIR = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas"
 FIELDS_JSON = SCHEMAS_DIR / "iso8583_fields.json"
 BASE_YAML = SCHEMAS_DIR / "openapi_base.yaml"          # ソースファイル: data/schemas/ に配置

@@ -11,7 +11,7 @@ from typing import Annotated, Optional
 
 import typer
 
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 
 
 class ParseOutput(str, Enum):

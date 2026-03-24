@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 
 from typer.testing import CliRunner
 
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 from iso8583_manager.presentation.cli.app import app
 
 runner = CliRunner()
@@ -264,7 +264,7 @@ class TestGenerateCommandErrors:
         assert "/nonexistent/spec.json" in result.output
 
     def test_generate_encode_error_exits_3(self) -> None:
-        from iso8583_manager.core.exceptions import MessageEncodeError
+        from iso8583_types.core.exceptions import MessageEncodeError
         with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
             mock_uc = MagicMock()
             mock_uc.execute.side_effect = MessageEncodeError("エンコード失敗")

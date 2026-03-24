@@ -10,9 +10,9 @@ from unittest.mock import MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from iso8583_manager.core.exceptions import MessageDecodeError
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_manager.core.models.mti import Mti
+from iso8583_types.core.exceptions import MessageDecodeError
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.mti import Mti
 from iso8583_manager.presentation.api.app import app
 from iso8583_manager.presentation.api.routers.messages import get_parse_use_case
 

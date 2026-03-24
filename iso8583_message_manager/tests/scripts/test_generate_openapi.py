@@ -118,7 +118,7 @@ class TestBuildMtiTypesExample:
 
     def test_gen_oa_08_description_matches_enum(self) -> None:
         """GEN-OA-08: MtiTypesExample の description が mti.py の .description と一致。"""
-        from iso8583_manager.core.models.mti import (
+        from iso8583_types.core.models.mti import (
             MtiClass,
             MtiFunction,
             MtiOrigin,

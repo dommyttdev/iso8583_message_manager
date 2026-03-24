@@ -8,7 +8,7 @@ import logging
 import pytest
 import typer
 
-from iso8583_manager.core.exceptions import (
+from iso8583_types.core.exceptions import (
     InvalidMtiError,
     MessageDecodeError,
     MessageEncodeError,

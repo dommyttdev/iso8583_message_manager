@@ -6,9 +6,9 @@ from typing import Any, Type
 import iso8583
 from iso8583.specs import default_ascii
 
-from iso8583_manager.core.exceptions import MessageDecodeError, MessageEncodeError, SpecError
-from iso8583_manager.core.interfaces.iso_ports import IIso8583Model, IMessageGenerator
-from iso8583_manager.core.models.mti import Mti
+from iso8583_types.core.exceptions import MessageDecodeError, MessageEncodeError, SpecError
+from iso8583_types.core.interfaces.iso_ports import IIso8583Model, IMessageGenerator
+from iso8583_types.core.models.mti import Mti
 
 logger = logging.getLogger(__name__)
 

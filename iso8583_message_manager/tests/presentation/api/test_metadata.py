@@ -74,7 +74,7 @@ class TestMtiTypesEndpoint:
 
     def test_api_meta_05_versions_count_matches_enum(self) -> None:
         """API-META-05: versions の件数が MtiVersion enum 数と一致（mti.py との同期保証）。"""
-        from iso8583_manager.core.models.mti import MtiVersion
+        from iso8583_types.core.models.mti import MtiVersion
 
         response = client.get("/api/v1/mti-types")
         data = response.json()

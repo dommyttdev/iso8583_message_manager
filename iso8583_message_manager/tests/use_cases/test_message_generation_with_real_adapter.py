@@ -9,8 +9,8 @@ from importlib.resources import files as _pkg_files
 
 import pytest
 
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_manager.core.models.mti import Mti
+from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.core.models.mti import Mti
 from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
 from iso8583_manager.use_cases.message_parsing import ParseMessageUseCase

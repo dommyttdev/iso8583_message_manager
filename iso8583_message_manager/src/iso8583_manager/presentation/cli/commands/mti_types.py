@@ -13,7 +13,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from iso8583_manager.core.models.mti import MtiClass, MtiFunction, MtiOrigin, MtiVersion
+from iso8583_types.core.models.mti import MtiClass, MtiFunction, MtiOrigin, MtiVersion
 
 
 class MtiOutput(str, Enum):

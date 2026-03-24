@@ -7,11 +7,15 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "iso8583-types",
     "pyiso8583>=1.0.1",
     "pydantic>=2.0.0",
     "typer>=0.12.0",
     "rich>=13.0.0",
 ]
+
+[tool.uv.sources]
+iso8583-types = { path = "../packages/iso8583-types", editable = true }
 
 [project.scripts]
 iso8583-msg = "iso8583_manager.__main__:main"
