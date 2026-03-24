@@ -5,7 +5,7 @@ GET /api/v1/health のルーターユニットテスト。
 """
 from fastapi.testclient import TestClient
 
-from iso8583_manager.presentation.api.app import app
+from iso8583_api.app import app
 
 client = TestClient(app)
 

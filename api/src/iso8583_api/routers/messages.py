@@ -12,12 +12,12 @@ from fastapi import APIRouter, Depends
 
 from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 from iso8583_types.core.models.mti import Mti
-from iso8583_manager.presentation.api.schemas.generate import (
+from iso8583_api.schemas.generate import (
     GenerateRequest,
     GenerateResponse,
 )
-from iso8583_manager.presentation.api.schemas.parse import ParseRequest, ParseResponse
-from iso8583_manager.presentation.container import (
+from iso8583_api.schemas.parse import ParseRequest, ParseResponse
+from iso8583_api.container import (
     build_generate_use_case,
     build_parse_use_case,
 )

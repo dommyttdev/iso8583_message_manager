@@ -16,7 +16,7 @@ from iso8583_types.core.exceptions import (
     MessageEncodeError,
     SpecError,
 )
-from iso8583_manager.presentation.api.error_handler import (
+from iso8583_api.error_handler import (
     invalid_mti_handler,
     iso8583_error_handler,
     message_decode_error_handler,
@@ -24,7 +24,7 @@ from iso8583_manager.presentation.api.error_handler import (
     spec_error_handler,
     value_error_handler,
 )
-from iso8583_manager.presentation.api.routers import health, messages, metadata
+from iso8583_api.routers import health, messages, metadata
 
 logger = logging.getLogger(__name__)
 

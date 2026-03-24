@@ -17,7 +17,8 @@ APP_DIR = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(APP_DIR / "src"))
 sys.path.insert(0, str(APP_DIR / "scripts" / "code_generator"))
 
-_OUTPUT_YAML = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas" / "generated" / "openapi.yaml"
+ROOT_DIR = APP_DIR.parent
+_OUTPUT_YAML = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas" / "generated" / "openapi.yaml"
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -42,7 +43,7 @@ def test_ct_01_02_03_api_contract() -> None:
     from schemathesis.core.result import Ok
     from schemathesis.transport.asgi import ASGI_TRANSPORT
 
-    from iso8583_manager.presentation.api.app import app as fastapi_app
+    from iso8583_api.app import app as fastapi_app
 
     # schemathesis 4.x: openapi.from_asgi() で ASGI アプリから直接スキーマを読み込む
     schema = schemathesis.openapi.from_asgi("/openapi.json", fastapi_app)

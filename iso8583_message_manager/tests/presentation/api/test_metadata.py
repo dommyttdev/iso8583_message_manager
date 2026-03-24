@@ -10,8 +10,8 @@ from unittest.mock import MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from iso8583_manager.presentation.api.app import app
-from iso8583_manager.presentation.api.routers.metadata import _get_fields_data
+from iso8583_api.app import app
+from iso8583_api.routers.metadata import _get_fields_data
 
 _FIELDS_JSON = _pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json"
 
