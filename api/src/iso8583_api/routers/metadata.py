@@ -57,7 +57,7 @@ def list_mti_types() -> Dict[str, List[Dict[str, str]]]:
 
     def enum_to_list(enum_cls: type) -> List[Dict[str, str]]:
         return [
-            {"code": str(member.value), "description": member.description}  # type: ignore[attr-defined]
+            {"code": str(member.value), "description": member.description}
             for member in enum_cls  # type: ignore[attr-defined]
         ]
 

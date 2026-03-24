@@ -32,7 +32,7 @@ class TestMainModule:
 class TestMainSubcommands:
     @pytest.fixture(autouse=True)
     def runner(self) -> CliRunner:
-        return CliRunner()
+        return CliRunner(env={"NO_COLOR": "1"})
 
     def test_main_04_no_args_shows_help(self, runner: CliRunner) -> None:
         """引数なしでヘルプが表示されること（exit_code は 0 または 2 を許容）"""
