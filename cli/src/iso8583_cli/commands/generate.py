@@ -10,14 +10,14 @@ from typing import Annotated, List, Optional
 
 import typer
 
-from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
 
 
 class GenerateOutput(str, Enum):
     hex = "hex"
     json = "json"
     binary = "binary"
-from iso8583_types.core.models.mti import Mti
+from iso8583_types.models.mti import Mti
 from iso8583_cli.error_handler import handle_error
 from iso8583_cli.formatters.generate_formatter import (
     print_binary,

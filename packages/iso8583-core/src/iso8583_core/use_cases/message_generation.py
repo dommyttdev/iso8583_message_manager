@@ -1,6 +1,6 @@
 import logging
-from iso8583_types.core.interfaces.iso_ports import IMessageGenerator, IIso8583Model
-from iso8583_types.core.models.mti import Mti
+from iso8583_types.interfaces.iso_ports import IMessageGenerator, IIso8583Model
+from iso8583_types.models.mti import Mti
 
 logger = logging.getLogger(__name__)
 

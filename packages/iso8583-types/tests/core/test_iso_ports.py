@@ -1,10 +1,10 @@
 """
-iso8583_types.core.interfaces.iso_ports のユニットテスト。
+iso8583_types.interfaces.iso_ports のユニットテスト。
 
 Protocol の構造 (メソッドシグネチャ) を検証する。
 """
 import inspect
-from iso8583_types.core.interfaces.iso_ports import IIso8583Model, IMessageGenerator
+from iso8583_types.interfaces.iso_ports import IIso8583Model, IMessageGenerator
 
 
 class TestIIso8583ModelProtocol:

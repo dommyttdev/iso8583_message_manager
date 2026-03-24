@@ -211,6 +211,68 @@ cli/
 
 ---
 
+## フェーズ 6.5: `iso8583_message_manager` 残存ファイルの移行・削除
+
+**目的**: 旧パッケージを完全に解体し、モノレポへの移行を完結させる
+
+### 残存ファイルの移行先マッピング
+
+| 残存ファイル | 移行先 | 備考 |
+|------------|--------|------|
+| `tests/core/test_iso_models.py` | `packages/iso8583-types/tests/core/` | |
+| `tests/core/test_mti.py` | 削除 | `packages/iso8583-types/tests/core/test_mti.py` と重複 |
+| `tests/core/test_package_data.py` | `packages/iso8583-core/tests/` | |
+| `tests/infrastructure/test_wrapper*.py` (3件) | `packages/iso8583-core/tests/infrastructure/` | |
+| `tests/use_cases/test_*.py` (3件) | `packages/iso8583-core/tests/use_cases/` | |
+| `tests/presentation/api/test_*.py` (4件) | `api/tests/presentation/api/` | 既存と統合 |
+| `tests/presentation/test_container.py` | `api/tests/` + `cli/tests/` に分割 | API/CLI それぞれの container テスト |
+| `tests/presentation/test_error_handler.py` | `api/tests/` | API エラーハンドラ対象 |
+| `tests/presentation/test_fields_command.py` | `cli/tests/presentation/` | |
+| `tests/presentation/test_generate_command.py` | `cli/tests/presentation/` | |
+| `tests/presentation/test_parse_command.py` | `cli/tests/presentation/` | |
+| `tests/presentation/test_mti_types_command.py` | `cli/tests/presentation/` | |
+| `tests/presentation/test_main.py` | `cli/tests/presentation/` | `__main__.py` の移行先に合わせる |
+| `tests/integration/test_cli_integration.py` | `cli/tests/integration/` | |
+| `tests/integration/test_message_generation_integration.py` | `packages/iso8583-core/tests/integration/` | |
+| `tests/scripts/test_generate_models.py` | `packages/iso8583-core/tests/scripts/` | |
+| `tests/scripts/test_generate_openapi.py` | `packages/iso8583-core/tests/scripts/` | |
+| `tests/scripts/test_openapi_validity.py` | `api/tests/contract/` | OpenAPI 整合性検証 |
+| `tests/contract/test_api_contract.py` | `api/tests/contract/` と重複のため削除 | |
+| `tests/test_package_metadata.py` | 削除 | 旧パッケージメタデータのテスト |
+| `scripts/code_generator/generate_models.py` | `packages/iso8583-core/scripts/` | パス定義を更新 |
+| `scripts/code_generator/generate_openapi.py` | `packages/iso8583-core/scripts/` | パス定義を更新 |
+| `src/iso8583_manager/__main__.py` | `cli/src/iso8583_cli/__main__.py` | `iso8583-msg` エントリポイントとして統合 |
+| `doc/` (全8件) | モノレポルート `doc/` | git mv で履歴保持 |
+| `README.md` | モノレポルート `README.md` | git mv で履歴保持 |
+
+### 削除対象 (移行不要)
+
+| ファイル | 理由 |
+|---------|------|
+| `src/iso8583_manager/` 全 `__init__.py` | 空ファイル、旧パッケージの残骸 |
+| `src/iso8583_manager/presentation/container.py` | `api/` と `cli/` にコピー済み |
+| `src/iso8583_manager/data/schemas/generated/openapi.yaml` | 新パスに生成済み |
+| `pyproject.toml` | 各パッケージに分散済み |
+| `iso8583_message_manager/` ディレクトリ全体 | 移行完了後に削除 |
+
+### タスク
+
+- [ ] テストを各パッケージへ `git mv` で移動・インポートパス修正
+- [ ] `scripts/` を `packages/iso8583-core/scripts/` へ `git mv`
+- [ ] `doc/` をモノレポルートへ `git mv`
+- [ ] `README.md` をモノレポルートへ `git mv`
+- [ ] `src/iso8583_manager/__main__.py` を `cli/` へ移動
+- [ ] 各パッケージのテストが全件パスすることを確認
+- [ ] `iso8583_message_manager/` を削除
+
+### 完了条件
+
+- `iso8583_message_manager/` ディレクトリが存在しない
+- 全パッケージのテストが引き続き全件グリーン
+- `scripts/` がモノレポルート直下またはコア配下で動作する
+
+---
+
 ## フェーズ 7: `web/` Spring Boot 新規作成
 
 **目的**: 一括生成・ストレステスト機能を持つ Web アプリを構築する

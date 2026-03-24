@@ -10,7 +10,7 @@ from unittest.mock import MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from iso8583_types.core.exceptions import InvalidMtiError, MessageEncodeError
+from iso8583_types.exceptions import InvalidMtiError, MessageEncodeError
 from iso8583_api.app import app
 from iso8583_api.routers.messages import get_generate_use_case
 

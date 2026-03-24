@@ -61,7 +61,7 @@ class TestSpecPathResolution:
 
     def test_invalid_spec_path_propagates_spec_error(self) -> None:
         """不正なspecパスはuse case実行時に SpecError を発生させる。"""
-        from iso8583_types.core.exceptions import SpecError
+        from iso8583_types.exceptions import SpecError
 
         with pytest.raises(SpecError):
             build_generate_use_case("/nonexistent/path/spec.json")

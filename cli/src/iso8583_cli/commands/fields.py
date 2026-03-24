@@ -12,7 +12,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from iso8583_types.core.exceptions import SpecError
+from iso8583_types.exceptions import SpecError
 from iso8583_cli.error_handler import handle_error
 from iso8583_cli.container import _DEFAULT_SPEC_PATH
 

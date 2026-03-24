@@ -1,10 +1,10 @@
 """
-iso8583_types.core.exceptions のユニットテスト。
+iso8583_types.exceptions のユニットテスト。
 
 例外クラスの継承関係と isinstance チェックを検証する。
 """
 import pytest
-from iso8583_types.core.exceptions import (
+from iso8583_types.exceptions import (
     Iso8583Error,
     InvalidMtiError,
     MessageDecodeError,

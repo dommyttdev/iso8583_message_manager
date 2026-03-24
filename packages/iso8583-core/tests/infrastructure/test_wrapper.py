@@ -1,7 +1,7 @@
 from importlib.resources import files as _pkg_files
 from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
-from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_types.core.models.mti import Mti
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.models.mti import Mti
 
 def test_generate_and_parse():
     # Setup

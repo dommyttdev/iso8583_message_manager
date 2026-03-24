@@ -9,7 +9,7 @@ from importlib.resources import files as _pkg_files
 import pytest
 from pydantic import ValidationError
 
-from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
 
 _FIELDS_JSON = _pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json"
 

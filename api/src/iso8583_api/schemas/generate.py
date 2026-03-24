@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
 
 
 class GenerateRequest(BaseModel):

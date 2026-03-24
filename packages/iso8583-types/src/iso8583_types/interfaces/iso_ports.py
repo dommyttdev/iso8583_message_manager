@@ -1,5 +1,5 @@
 from typing import Protocol, Any, Dict, Type
-from iso8583_types.core.models.mti import Mti
+from iso8583_types.models.mti import Mti
 
 class IIso8583Model(Protocol):
     """

@@ -8,10 +8,10 @@ from unittest.mock import Mock
 
 import pytest
 
-from iso8583_types.core.exceptions import MessageDecodeError
-from iso8583_types.core.interfaces.iso_ports import IMessageGenerator
-from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_types.core.models.mti import Mti
+from iso8583_types.exceptions import MessageDecodeError
+from iso8583_types.interfaces.iso_ports import IMessageGenerator
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.models.mti import Mti
 from iso8583_core.use_cases.message_parsing import ParseMessageUseCase
 
 

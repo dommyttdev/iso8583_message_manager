@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import dataclasses
 from enum import IntEnum
-from iso8583_types.core.exceptions import InvalidMtiError
+from iso8583_types.exceptions import InvalidMtiError
 
 
 class MtiVersion(IntEnum):

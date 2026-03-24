@@ -6,7 +6,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, Optional
 
-from iso8583_types.core.interfaces.iso_ports import IIso8583Model
+from iso8583_types.interfaces.iso_ports import IIso8583Model
 
 
 class Iso8583MessageModel(BaseModel):

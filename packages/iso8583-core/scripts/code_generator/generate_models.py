@@ -5,7 +5,7 @@ from pathlib import Path
 # Paths
 ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent  # d:/Projects/Cards/
 SCHEMAS_DIR = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
-GENERATED_DIR = ROOT_DIR / "packages" / "iso8583-types" / "src" / "iso8583_types" / "core" / "models" / "generated"
+GENERATED_DIR = ROOT_DIR / "packages" / "iso8583-types" / "src" / "iso8583_types" / "models" / "generated"
 
 JSON_FILE = SCHEMAS_DIR / "iso8583_fields.json"
 MODELS_FILE = GENERATED_DIR / "iso_models.py"
@@ -37,7 +37,7 @@ def generate_models() -> None:
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, Optional
 
-from iso8583_types.core.interfaces.iso_ports import IIso8583Model
+from iso8583_types.interfaces.iso_ports import IIso8583Model
 
 
 class Iso8583MessageModel(BaseModel):

@@ -38,7 +38,7 @@ ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent  # d:/Projects/Card
 
 # mti.py を直接インポートするため src/ をパスに追加（venv 不要）
 sys.path.insert(0, str(ROOT_DIR / "packages" / "iso8583-types" / "src"))
-from iso8583_types.core.models.mti import MtiVersion, MtiClass, MtiFunction, MtiOrigin  # noqa: E402
+from iso8583_types.models.mti import MtiVersion, MtiClass, MtiFunction, MtiOrigin  # noqa: E402
 SCHEMAS_DIR = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
 FIELDS_JSON = SCHEMAS_DIR / "iso8583_fields.json"
 BASE_YAML = SCHEMAS_DIR / "openapi_base.yaml"

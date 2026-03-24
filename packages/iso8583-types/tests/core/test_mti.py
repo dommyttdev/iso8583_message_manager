@@ -1,19 +1,19 @@
 """
-iso8583_types.core.models.mti のユニットテスト。
+iso8583_types.models.mti のユニットテスト。
 
 既存の iso8583_message_manager テストをベースに
 新パッケージのインポートパスへ移行。
 """
 import dataclasses
 import pytest
-from iso8583_types.core.models.mti import (
+from iso8583_types.models.mti import (
     Mti,
     MtiClass,
     MtiFunction,
     MtiOrigin,
     MtiVersion,
 )
-from iso8583_types.core.exceptions import InvalidMtiError
+from iso8583_types.exceptions import InvalidMtiError
 
 
 class TestMtiVersionEnum:

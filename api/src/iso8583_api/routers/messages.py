@@ -10,8 +10,8 @@ import logging
 
 from fastapi import APIRouter, Depends
 
-from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_types.core.models.mti import Mti
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
+from iso8583_types.models.mti import Mti
 from iso8583_api.schemas.generate import (
     GenerateRequest,
     GenerateResponse,
