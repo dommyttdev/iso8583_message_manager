@@ -123,3 +123,71 @@ class TestMtiFromStrValidation:
     def test_undefined_class_zero_raises(self):
         with pytest.raises(InvalidMtiError):
             Mti.from_str("0000")
+
+    def test_undefined_version_raises(self):
+        """1桁目（バージョン）が未定義の場合に InvalidMtiError が発生すること"""
+        with pytest.raises(InvalidMtiError):
+            Mti.from_str("3100")  # バージョン 3 は未定義
+
+    def test_undefined_function_raises(self):
+        """3桁目（機能）が未定義の場合に InvalidMtiError が発生すること"""
+        with pytest.raises(InvalidMtiError):
+            Mti.from_str("0150")  # 機能 5 は未定義
+
+    def test_undefined_origin_raises(self):
+        """4桁目（発生源）が未定義の場合に InvalidMtiError が発生すること"""
+        with pytest.raises(InvalidMtiError):
+            Mti.from_str("0106")  # 発生源 6 は未定義
+
+
+class TestMtiVersionDescription:
+    @pytest.mark.parametrize("member,expected", [
+        (MtiVersion.V1987,   "ISO 8583-1:1987年版"),
+        (MtiVersion.V1993,   "ISO 8583-2:1993年版"),
+        (MtiVersion.V2003,   "ISO 8583-1:2003年版"),
+        (MtiVersion.PRIVATE, "個社使用"),
+    ])
+    def test_description_returns_expected(self, member: MtiVersion, expected: str):
+        assert member.description == expected
+
+
+class TestMtiClassDescription:
+    @pytest.mark.parametrize("member,expected", [
+        (MtiClass.AUTHORIZATION,      "オーソリゼーション"),
+        (MtiClass.FINANCIAL,          "ファイナンシャル"),
+        (MtiClass.FILE_UPDATE,        "ファイル更新"),
+        (MtiClass.REVERSAL,           "取消"),
+        (MtiClass.RECONCILIATION,     "交換"),
+        (MtiClass.ADMINISTRATIVE,     "管理"),
+        (MtiClass.FEE,                "課金"),
+        (MtiClass.NETWORK_MANAGEMENT, "ネットワーク管理"),
+    ])
+    def test_description_returns_expected(self, member: MtiClass, expected: str):
+        assert member.description == expected
+
+
+class TestMtiFunctionDescription:
+    @pytest.mark.parametrize("member,expected", [
+        (MtiFunction.REQUEST,         "要求"),
+        (MtiFunction.RESPONSE,        "要求に対する応答"),
+        (MtiFunction.ADVICE,          "アドバイス"),
+        (MtiFunction.ADVICE_RESPONSE, "アドバイスに対する応答"),
+        (MtiFunction.NOTIFICATION,    "通知"),
+        (MtiFunction.RESPONSE_ACK,    "応答の認証"),
+        (MtiFunction.NEGATIVE_ACK,    "ネガティブな認証"),
+    ])
+    def test_description_returns_expected(self, member: MtiFunction, expected: str):
+        assert member.description == expected
+
+
+class TestMtiOriginDescription:
+    @pytest.mark.parametrize("member,expected", [
+        (MtiOrigin.ACQUIRER,        "アクワイアラ"),
+        (MtiOrigin.ACQUIRER_REPEAT, "アクワイアラ（リピート）"),
+        (MtiOrigin.ISSUER,          "イシュア"),
+        (MtiOrigin.ISSUER_REPEAT,   "イシュア（リピート）"),
+        (MtiOrigin.OTHER,           "その他"),
+        (MtiOrigin.OTHER_REPEAT,    "その他（リピート）"),
+    ])
+    def test_description_returns_expected(self, member: MtiOrigin, expected: str):
+        assert member.description == expected

@@ -93,3 +93,69 @@ class TestMainSubcommands:
         result = runner.invoke(app, ["api"])
         assert result.exit_code != 0
         assert "iso8583_cli[api]" in result.output
+
+    def test_main_10_api_command_starts_uvicorn(
+        self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """uvicorn インストール済み時に uvicorn.run が呼ばれること"""
+        import sys
+        from unittest.mock import MagicMock
+
+        mock_uvicorn = MagicMock()
+        monkeypatch.setitem(sys.modules, "uvicorn", mock_uvicorn)
+
+        from iso8583_cli.__main__ import app
+        result = runner.invoke(app, ["api", "--host", "0.0.0.0", "--port", "9000"])
+        mock_uvicorn.run.assert_called_once_with(
+            "iso8583_api.app:app",
+            host="0.0.0.0",
+            port=9000,
+        )
+        assert result.exit_code == 0
+
+    def test_main_11_web_missing_dep_shows_helpful_error(
+        self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """web コマンドで uvicorn 未インストール時に有用なエラーメッセージが表示されること"""
+        import builtins
+        real_import = builtins.__import__
+
+        def mock_import(name: str, *args, **kwargs):  # type: ignore[no-untyped-def]
+            if name == "uvicorn":
+                raise ImportError("uvicorn not installed")
+            return real_import(name, *args, **kwargs)
+
+        from iso8583_cli.__main__ import app
+        monkeypatch.setattr(builtins, "__import__", mock_import)
+        result = runner.invoke(app, ["web"])
+        assert result.exit_code != 0
+        assert "iso8583_cli[web]" in result.output
+
+    def test_main_12_web_command_starts_uvicorn(
+        self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """web コマンドで uvicorn インストール済み時に uvicorn.run が呼ばれること"""
+        import sys
+        from unittest.mock import MagicMock
+
+        mock_uvicorn = MagicMock()
+        monkeypatch.setitem(sys.modules, "uvicorn", mock_uvicorn)
+
+        from iso8583_cli.__main__ import app
+        result = runner.invoke(app, ["web", "--host", "0.0.0.0", "--port", "8080"])
+        mock_uvicorn.run.assert_called_once_with(
+            "iso8583_manager.presentation.web.app:app",
+            host="0.0.0.0",
+            port=8080,
+        )
+        assert result.exit_code == 0
+
+    def test_main_13_main_function_invokes_app(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """main() が app() を呼び出すこと"""
+        from iso8583_cli import __main__ as mod
+        called: list[bool] = []
+        monkeypatch.setattr(mod, "app", lambda: called.append(True))
+        mod.main()
+        assert called == [True]

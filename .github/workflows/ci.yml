@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # ──────────────────────────────────────────
+  # iso8583-types
+  # ──────────────────────────────────────────
+  iso8583-types:
+    name: iso8583-types
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/iso8583-types
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: uv インストール
+        uses: astral-sh/setup-uv@v4
+
+      - name: 依存関係インストール
+        run: uv sync --dev
+
+      - name: ruff lint
+        run: uv run ruff check src/ tests/
+
+      - name: mypy 型チェック
+        run: uv run mypy src/
+
+      - name: pytest + カバレッジ
+        run: uv run pytest --cov=iso8583_types --cov-report=term-missing --cov-fail-under=95
+
+  # ──────────────────────────────────────────
+  # iso8583-core
+  # ──────────────────────────────────────────
+  iso8583-core:
+    name: iso8583-core
+    runs-on: ubuntu-latest
+    needs: iso8583-types
+    defaults:
+      run:
+        working-directory: packages/iso8583-core
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: uv インストール
+        uses: astral-sh/setup-uv@v4
+
+      - name: 依存関係インストール
+        run: uv sync --dev
+
+      - name: ruff lint
+        run: uv run ruff check src/ tests/
+
+      - name: mypy 型チェック
+        run: uv run mypy src/
+
+      - name: pytest + カバレッジ
+        run: uv run pytest --cov=iso8583_core --cov-report=term-missing --cov-fail-under=95
+
+  # ──────────────────────────────────────────
+  # api
+  # ──────────────────────────────────────────
+  api:
+    name: api
+    runs-on: ubuntu-latest
+    needs: iso8583-core
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: uv インストール
+        uses: astral-sh/setup-uv@v4
+
+      - name: 依存関係インストール
+        run: uv sync --dev
+
+      - name: ruff lint
+        run: uv run ruff check src/ tests/
+
+      - name: mypy 型チェック
+        run: uv run mypy src/
+
+      - name: pytest + カバレッジ
+        run: uv run pytest --cov=iso8583_api --cov-report=term-missing --cov-fail-under=90
+
+  # ──────────────────────────────────────────
+  # cli
+  # ──────────────────────────────────────────
+  cli:
+    name: cli
+    runs-on: ubuntu-latest
+    needs: iso8583-core
+    defaults:
+      run:
+        working-directory: cli
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: uv インストール
+        uses: astral-sh/setup-uv@v4
+
+      - name: 依存関係インストール
+        run: uv sync --dev
+
+      - name: ruff lint
+        run: uv run ruff check src/ tests/
+
+      - name: mypy 型チェック
+        run: uv run mypy src/
+
+      - name: pytest + カバレッジ
+        run: uv run pytest --cov=iso8583_cli --cov-report=term-missing --cov-fail-under=90

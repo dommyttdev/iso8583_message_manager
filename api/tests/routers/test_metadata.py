@@ -79,3 +79,25 @@ class TestMtiTypesEndpoint:
         response = client.get("/api/v1/mti-types")
         data = response.json()
         assert len(data["versions"]) == len(MtiVersion)
+
+
+class TestGetFieldsData:
+    def test_api_meta_06_get_fields_data_reads_real_file(self) -> None:
+        """_get_fields_data() が実際のファイルを読み込めること（依存オーバーライドなし）。"""
+        from iso8583_api.routers.metadata import _get_fields_data
+
+        data = _get_fields_data()
+        assert isinstance(data, dict)
+        assert len(data) > 0
+
+    def test_api_meta_07_get_fields_data_raises_on_missing_file(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """_get_fields_data() がファイル不在時に OSError を送出すること。"""
+        from iso8583_api import container as c
+        monkeypatch.setattr(c, "_DEFAULT_SPEC_PATH", type(c._DEFAULT_SPEC_PATH)("/nonexistent/path.json"))
+        monkeypatch.delenv("ISO8583_SPEC_PATH", raising=False)
+
+        from iso8583_api.routers.metadata import _get_fields_data
+        with pytest.raises(OSError):
+            _get_fields_data()

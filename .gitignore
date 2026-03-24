@@ -94,6 +94,8 @@ __pypackages__/
 ### Project-local (non-tracked) ###
 .claude/
 CLAUDE.md
+Task.md
+TestPlan.md
 
 ### IDE ###
 .idea/
