@@ -1,29 +1,52 @@
-# iso8583-manager
+# ISO 8583 Message Manager
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
-`pyiso8583` をクリーンアーキテクチャでラップした ISO 8583 金融メッセージ生成・解析ライブラリ。
+ISO 8583 金融メッセージの生成・解析を行うモノレポ。
+`pyiso8583` をクリーンアーキテクチャでラップし、CLI・REST API・Web UI の各インターフェースを提供する。
 
-## 特徴
+## リポジトリ構成
 
-- **メタデータ駆動**: `iso8583_fields.json` を唯一の定義源として Pydantic モデルを自動生成
-- **型安全な MTI**: バージョン・クラス・機能・起点の 4 enum で構成する Value Object
-- **CLI / REST API**: `iso8583-msg cli` と `iso8583-msg api` の両インターフェースを提供
-- **複数出力形式**: hex / JSON / binary / table に対応
-- **クリーンアーキテクチャ**: Use Cases が具体実装に依存しない設計（DIP）
-
-## インストール
-
-### 基本（CLI のみ）
-
-```bash
-pip install -e .
+```
+d:/Projects/Cards/
+├── packages/
+│   ├── iso8583-types/     # 型定義・インターフェース・例外（pyiso8583 依存なし）
+│   └── iso8583-core/      # ユースケース・インフラ実装
+├── api/                   # FastAPI サービス
+├── cli/                   # CLI ツール
+├── shared/
+│   └── openapi/           # API 契約（api/ と web/ の HTTP 境界）
+└── doc/                   # 設計ドキュメント
 ```
 
-### REST API サーバー付き
+### 依存関係
+
+```
+api/ ──→ iso8583-core ──→ iso8583-types
+cli/ ──→ iso8583-core ──→ iso8583-types
+web/ ──→ (HTTP のみ)  ──→ api/
+```
+
+## セットアップ
+
+各コンポーネントは独立した仮想環境で管理します（[uv](https://docs.astral.sh/uv/) 推奨）。
 
 ```bash
-pip install -e ".[api]"
+# CLI
+cd cli && uv sync
+
+# REST API
+cd api && uv sync
+
+# ライブラリのみ（開発・テスト用）
+cd packages/iso8583-core && uv sync
+```
+
+uv 未インストールの場合は pip を使用してください。
+
+```bash
+cd cli && pip install -e .
+cd api && pip install -e .
 ```
 
 ## クイックスタート
@@ -32,81 +55,64 @@ pip install -e ".[api]"
 
 ```bash
 # メッセージ生成（hex 出力）
-iso8583-msg cli generate 0200 primary_account_number=4111111111111111 processing_code=000000
+iso8583-msg generate 0200 primary_account_number=4111111111111111 processing_code=000000
 
 # メッセージ生成（JSON 出力）
-iso8583-msg cli generate 0200 primary_account_number=4111111111111111 --output json
+iso8583-msg generate 0200 primary_account_number=4111111111111111 --output json
 
-# メッセージ解析（JSON 出力）
-iso8583-msg cli parse 303230302...
+# メッセージ解析
+iso8583-msg parse 303230302...
 
-# メッセージ解析（テーブル出力 / stdin から読み込み）
-echo "303230302..." | iso8583-msg cli parse --output table
+# メッセージ解析（テーブル出力）
+echo "303230302..." | iso8583-msg parse --output table
 
 # フィールド定義一覧
-iso8583-msg cli fields
+iso8583-msg fields
 
 # MTI 種別一覧
-iso8583-msg cli mti-types
+iso8583-msg mti-types
 ```
 
 ### REST API サーバー
 
 ```bash
-# サーバー起動
-iso8583-msg api --host 127.0.0.1 --port 8000
-# → ブラウザで http://127.0.0.1:8000/docs (Swagger UI) を開く
+cd api
+uvicorn iso8583_api.app:app --host 127.0.0.1 --port 8000
+# → http://127.0.0.1:8000/docs (Swagger UI)
 ```
 
 ### Python ライブラリとして使用
 
 ```python
-from iso8583_manager.core.models.mti import Mti
-from iso8583_manager.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_manager.presentation.container import build_generate_use_case
+import importlib.resources
 
-mti = Mti.from_str("0200")
+from iso8583_types.models.mti import Mti
+from iso8583_types.models.generated.iso_models import Iso8583MessageModel
+from iso8583_core.use_cases.message_generation import GenerateMessageUseCase
+from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
+
+spec_path = str(importlib.resources.files("iso8583_core.data.schemas") / "iso8583_fields.json")
+adapter = PyIso8583Adapter(spec_path)
+use_case = GenerateMessageUseCase(adapter)
+
 model = Iso8583MessageModel(
     primary_account_number="4111111111111111",
     processing_code="000000",
 )
-use_case = build_generate_use_case()
-raw = use_case.execute(mti=mti, model_data=model)
+raw = use_case.execute(mti=Mti.from_str("0200"), model_data=model)
 print(raw.hex())
-```
-
-## アーキテクチャ
-
-```
-Presentation（CLI / REST API）
-        ↓
-   Use Cases（ビジネスロジック）
-        ↓
-   Core（モデル・インターフェース）
-        ↑
-Infrastructure（pyiso8583 アダプター）
-```
-
-詳細: [doc/architecture/system_design.md](doc/architecture/system_design.md)
-
-## フィールド定義の更新
-
-`src/iso8583_manager/data/schemas/iso8583_fields.json` を編集した後、モデルを再生成します。
-
-```bash
-python scripts/code_generator/generate_models.py
 ```
 
 ## 開発コマンド
 
-以下のコマンドはプロジェクトルート（`pyproject.toml` があるディレクトリ）から実行してください。
+各コンポーネントのディレクトリから実行します。
 
 ```bash
-# テスト実行
+# テスト
 pytest
 
 # カバレッジ付きテスト
-pytest --cov=iso8583_manager
+pytest --cov
 
 # 型チェック
 mypy src/
@@ -115,6 +121,49 @@ mypy src/
 ruff check src/ tests/
 ```
 
+全コンポーネントをまとめてテストする場合:
+
+```bash
+for dir in packages/iso8583-types packages/iso8583-core api cli; do
+    echo "=== $dir ===" && (cd $dir && pytest -q)
+done
+```
+
+## フィールド定義の更新
+
+`packages/iso8583-core/src/iso8583_core/data/schemas/iso8583_fields.json` を編集した後、モデルと OpenAPI スキーマを再生成します。
+
+```bash
+cd packages/iso8583-core
+python scripts/code_generator/generate_models.py
+python scripts/code_generator/generate_openapi.py
+```
+
+生成物:
+- `packages/iso8583-types/src/iso8583_types/models/generated/iso_models.py`
+- `packages/iso8583-core/src/iso8583_core/data/schemas/generated/openapi.yaml`
+- `shared/openapi/iso8583-api.yaml`
+
+## アーキテクチャ
+
+```
+Presentation（api/ / cli/）
+        ↓
+   Use Cases（iso8583-core）
+        ↓
+   Interfaces（iso8583-types）
+        ↑
+Infrastructure（iso8583-core / pyiso8583 アダプター）
+```
+
+詳細: [doc/architecture/system_design.md](doc/architecture/system_design.md)
+
 ## ドキュメント
 
-[doc/README.md](doc/README.md) を参照してください。
+| ドキュメント | 内容 |
+|---|---|
+| [doc/architecture/system_design.md](doc/architecture/system_design.md) | システム設計・アーキテクチャ方針 |
+| [doc/api/api_design.md](doc/api/api_design.md) | REST API 設計・エンドポイント仕様 |
+| [doc/cli/cli_reference.md](doc/cli/cli_reference.md) | CLI コマンドリファレンス |
+| [doc/domain/iso8583/iso8583_specs.md](doc/domain/iso8583/iso8583_specs.md) | ISO 8583 ドメイン知識 |
+| [doc/tests/test_strategy.md](doc/tests/test_strategy.md) | テスト戦略 |
