@@ -32,18 +32,22 @@ class TestPackageData:
             missing = required_keys - field_def.keys()
             assert not missing, f"フィールド {field_num} の定義にキーが不足: {missing}"
 
-    def test_pd_04_container_default_spec_path_resolves(self) -> None:
-        """container.py のデフォルトスペックパスがパッケージ内に解決されること"""
-        from iso8583_cli.container import _DEFAULT_SPEC_PATH
+    def test_pd_04_spec_path_resolves_to_existing_file(self) -> None:
+        """importlib.resources で解決したスペックパスがファイルシステム上に存在すること"""
         from pathlib import Path
 
-        path = Path(str(_DEFAULT_SPEC_PATH))
+        spec = files("iso8583_core.data.schemas") / "iso8583_fields.json"
+        path = Path(str(spec))
         assert path.exists(), f"デフォルトスペックパスが存在しない: {path}"
         assert path.name == "iso8583_fields.json"
 
     def test_pd_05_use_case_builds_with_default_spec(self) -> None:
         """デフォルトスペックパスでユースケースが正常に生成されること"""
-        from iso8583_cli.container import build_generate_use_case
+        from pathlib import Path
+        from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
+        from iso8583_core.use_cases.message_generation import GenerateMessageUseCase
 
-        use_case = build_generate_use_case()
+        spec_path = Path(str(files("iso8583_core.data.schemas") / "iso8583_fields.json"))
+        adapter = PyIso8583Adapter(spec_json_path=str(spec_path))
+        use_case = GenerateMessageUseCase(message_generator=adapter)
         assert use_case is not None
