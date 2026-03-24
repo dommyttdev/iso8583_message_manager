@@ -11,20 +11,20 @@ from typing import Annotated, List, Optional
 import typer
 
 from iso8583_types.models.generated.iso_models import Iso8583MessageModel
-
-
-class GenerateOutput(str, Enum):
-    hex = "hex"
-    json = "json"
-    binary = "binary"
 from iso8583_types.models.mti import Mti
+from iso8583_cli.container import build_generate_use_case
 from iso8583_cli.error_handler import handle_error
 from iso8583_cli.formatters.generate_formatter import (
     print_binary,
     print_hex,
     print_json,
 )
-from iso8583_cli.container import build_generate_use_case
+
+
+class GenerateOutput(str, Enum):
+    hex = "hex"
+    json = "json"
+    binary = "binary"
 
 logger = logging.getLogger(__name__)
 

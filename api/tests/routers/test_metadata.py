@@ -5,8 +5,6 @@ GET /api/v1/fields, GET /api/v1/mti-types のルーターユニットテスト�
 """
 import json
 from importlib.resources import files as _pkg_files
-from unittest.mock import MagicMock
-
 import pytest
 from fastapi.testclient import TestClient
 
