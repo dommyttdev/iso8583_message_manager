@@ -18,7 +18,6 @@ _SCRIPTS_DIR = APP_DIR / "scripts" / "code_generator"
 sys.path.insert(0, str(_SCRIPTS_DIR))
 import generate_openapi as gen_mod  # noqa: E402
 from generate_openapi import (  # noqa: E402
-    _build_property,
     build_fields_example,
     build_message_fields_schema,
     build_mti_types_example,
