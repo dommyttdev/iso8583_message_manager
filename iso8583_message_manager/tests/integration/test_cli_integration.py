@@ -10,7 +10,7 @@ from importlib.resources import files as _pkg_files
 from typer.testing import CliRunner
 
 from iso8583_types.core.models.mti import MtiClass, MtiFunction, MtiOrigin, MtiVersion
-from iso8583_manager.presentation.cli.app import app
+from iso8583_cli.app import app
 
 runner = CliRunner()
 

@@ -8,7 +8,7 @@ import logging
 
 import typer
 
-from iso8583_manager.presentation.cli.app import app as _cli_app
+from iso8583_cli.app import app as _cli_app
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def run_api(
 
     logger.info("REST API サーバーを起動します: %s:%d", host, port)
     uvicorn.run(
-        "iso8583_manager.presentation.api.app:app",
+        "iso8583_api.app:app",
         host=host,
         port=port,
     )

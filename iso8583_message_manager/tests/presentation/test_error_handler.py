@@ -14,7 +14,7 @@ from iso8583_types.core.exceptions import (
     MessageEncodeError,
     SpecError,
 )
-from iso8583_manager.presentation.cli.error_handler import (
+from iso8583_cli.error_handler import (
     EXIT_DECODE_ERROR,
     EXIT_ENCODE_ERROR,
     EXIT_IO_ERROR,

@@ -18,13 +18,13 @@ class GenerateOutput(str, Enum):
     json = "json"
     binary = "binary"
 from iso8583_types.core.models.mti import Mti
-from iso8583_manager.presentation.cli.error_handler import handle_error
-from iso8583_manager.presentation.cli.formatters.generate_formatter import (
+from iso8583_cli.error_handler import handle_error
+from iso8583_cli.formatters.generate_formatter import (
     print_binary,
     print_hex,
     print_json,
 )
-from iso8583_manager.presentation.container import build_generate_use_case
+from iso8583_cli.container import build_generate_use_case
 
 logger = logging.getLogger(__name__)
 

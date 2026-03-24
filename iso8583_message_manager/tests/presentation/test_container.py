@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pytest
 
-from iso8583_manager.presentation.container import (
+from iso8583_cli.container import (
     build_generate_use_case,
     build_parse_use_case,
 )

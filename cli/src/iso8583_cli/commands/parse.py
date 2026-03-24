@@ -17,12 +17,12 @@ from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 class ParseOutput(str, Enum):
     json = "json"
     table = "table"
-from iso8583_manager.presentation.cli.error_handler import handle_error
-from iso8583_manager.presentation.cli.formatters.parse_formatter import (
+from iso8583_cli.error_handler import handle_error
+from iso8583_cli.formatters.parse_formatter import (
     print_json,
     print_table,
 )
-from iso8583_manager.presentation.container import build_parse_use_case
+from iso8583_cli.container import build_parse_use_case
 
 logger = logging.getLogger(__name__)
 

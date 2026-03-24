@@ -1,0 +1,35 @@
+[project]
+name = "iso8583-cli"
+version = "0.1.0"
+description = "ISO 8583 CLI ツール"
+requires-python = ">=3.10"
+dependencies = [
+    "iso8583-types",
+    "iso8583-core",
+    "typer>=0.12.0",
+    "rich>=13.0.0",
+]
+
+[project.scripts]
+iso8583-msg = "iso8583_cli.app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.uv.sources]
+iso8583-types = { path = "../packages/iso8583-types", editable = true }
+iso8583-core = { path = "../packages/iso8583-core", editable = true }

@@ -6,10 +6,10 @@ typer アプリケーションの定義とコマンド登録を行う。
 """
 import typer
 
-from iso8583_manager.presentation.cli.commands.fields import fields_command
-from iso8583_manager.presentation.cli.commands.generate import generate_command
-from iso8583_manager.presentation.cli.commands.mti_types import mti_types_command
-from iso8583_manager.presentation.cli.commands.parse import parse_command
+from iso8583_cli.commands.fields import fields_command
+from iso8583_cli.commands.generate import generate_command
+from iso8583_cli.commands.mti_types import mti_types_command
+from iso8583_cli.commands.parse import parse_command
 
 app = typer.Typer(
     name="iso8583",

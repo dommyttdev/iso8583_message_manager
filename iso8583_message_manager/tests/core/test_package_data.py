@@ -34,7 +34,7 @@ class TestPackageData:
 
     def test_pd_04_container_default_spec_path_resolves(self) -> None:
         """container.py のデフォルトスペックパスがパッケージ内に解決されること"""
-        from iso8583_manager.presentation.container import _DEFAULT_SPEC_PATH
+        from iso8583_cli.container import _DEFAULT_SPEC_PATH
         from pathlib import Path
 
         path = Path(str(_DEFAULT_SPEC_PATH))
@@ -43,7 +43,7 @@ class TestPackageData:
 
     def test_pd_05_use_case_builds_with_default_spec(self) -> None:
         """デフォルトスペックパスでユースケースが正常に生成されること"""
-        from iso8583_manager.presentation.container import build_generate_use_case
+        from iso8583_cli.container import build_generate_use_case
 
         use_case = build_generate_use_case()
         assert use_case is not None

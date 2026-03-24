@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 from typer.testing import CliRunner
 
 from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
-from iso8583_manager.presentation.cli.app import app
+from iso8583_cli.app import app
 
 runner = CliRunner()
 
@@ -34,7 +34,7 @@ def _make_mock_use_case(return_bytes: bytearray = _MOCK_BYTES) -> MagicMock:
 class TestGenerateCommandOutput:
     def test_generate_hex_output_default(self) -> None:
         """デフォルト出力形式(hex)でhex文字列がstdoutに出る。"""
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -42,14 +42,14 @@ class TestGenerateCommandOutput:
 
     def test_generate_output_hex_explicit(self) -> None:
         """--output hex で同結果。"""
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--output", "hex", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
         assert _MOCK_HEX in result.output
 
     def test_generate_json_output_has_mti_key(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--output", "json", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -57,21 +57,21 @@ class TestGenerateCommandOutput:
         assert "mti" in data
 
     def test_generate_json_output_has_hex_key(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--output", "json", "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
         assert "hex" in data
 
     def test_generate_json_output_has_length_key(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--output", "json", "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
         assert "length" in data
 
     def test_generate_json_mti_matches_input(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--output", "json", "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
@@ -79,14 +79,14 @@ class TestGenerateCommandOutput:
 
     def test_generate_binary_output_is_bytes(self) -> None:
         """--output binary でバイト列がstdoutに出る。"""
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--output", "binary", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
         assert result.output_bytes == bytes(_MOCK_BYTES)
 
     def test_generate_exits_zero_on_success(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -103,7 +103,7 @@ class TestGenerateCommandOutput:
 class TestGenerateCommandFields:
     def test_generate_single_field_passed_to_use_case(self) -> None:
         """フィールド1個が正しくuse caseに渡る。"""
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_uc = _make_mock_use_case()
             mock_build.return_value = mock_uc
             runner.invoke(app, [
@@ -117,7 +117,7 @@ class TestGenerateCommandFields:
 
     def test_generate_multiple_fields_passed_to_use_case(self) -> None:
         """複数フィールドが全てuse caseに渡る。"""
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_uc = _make_mock_use_case()
             mock_build.return_value = mock_uc
             runner.invoke(app, [
@@ -132,7 +132,7 @@ class TestGenerateCommandFields:
 
     def test_generate_no_fields_succeeds(self) -> None:
         """フィールド省略でも動作する (全Optional)。"""
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["generate", "0200", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -160,7 +160,7 @@ class TestGenerateCommandFields:
 
         processing_code は固定長 6 桁のため '1=2345'（6文字）を使用する。
         """
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_uc = _make_mock_use_case()
             mock_build.return_value = mock_uc
             runner.invoke(app, [
@@ -174,7 +174,7 @@ class TestGenerateCommandFields:
     def test_generate_parametrized_valid_mtis(self) -> None:
         """複数のMTI ("0100","0200","0800") で成功する。"""
         for mti_str in ["0100", "0200", "0800"]:
-            with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+            with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
                 mock_build.return_value = _make_mock_use_case()
                 result = runner.invoke(app, ["generate", mti_str, "--spec", _REAL_SPEC_PATH])
             assert result.exit_code == 0, f"MTI {mti_str} で失敗: {result.output}"
@@ -183,7 +183,7 @@ class TestGenerateCommandFields:
         """max_len ちょうどの値 → 成功 (境界値)。"""
         # primary_account_number: max_length=19
         pan_19 = "1234567890123456789"
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, [
                 "generate", "0200",
@@ -196,7 +196,7 @@ class TestGenerateCommandFields:
         """max_len+1 の値 → exit 1 (境界値)。"""
         # primary_account_number: max_length=19, この値は20文字
         pan_20 = "12345678901234567890"
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, [
                 "generate", "0200",
@@ -265,7 +265,7 @@ class TestGenerateCommandErrors:
 
     def test_generate_encode_error_exits_3(self) -> None:
         from iso8583_types.core.exceptions import MessageEncodeError
-        with patch("iso8583_manager.presentation.cli.commands.generate.build_generate_use_case") as mock_build:
+        with patch("iso8583_cli.commands.generate.build_generate_use_case") as mock_build:
             mock_uc = MagicMock()
             mock_uc.execute.side_effect = MessageEncodeError("エンコード失敗")
             mock_build.return_value = mock_uc

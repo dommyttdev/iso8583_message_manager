@@ -11,7 +11,7 @@ from typer.testing import CliRunner
 
 from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 from iso8583_types.core.models.mti import Mti
-from iso8583_manager.presentation.cli.app import app
+from iso8583_cli.app import app
 
 runner = CliRunner()
 
@@ -39,7 +39,7 @@ def _make_mock_use_case(mti: Mti = _SAMPLE_MTI, model: Iso8583MessageModel = _SA
 
 class TestParseCommandJsonOutput:
     def test_parse_hex_arg_json_output(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -47,21 +47,21 @@ class TestParseCommandJsonOutput:
         assert "mti" in data
 
     def test_parse_json_contains_mti(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
         assert data["mti"] == "0200"
 
     def test_parse_json_contains_fields(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
         assert "fields" in data
 
     def test_parse_json_fields_has_correct_values(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
@@ -69,7 +69,7 @@ class TestParseCommandJsonOutput:
 
     def test_parse_json_none_fields_omitted(self) -> None:
         """None フィールドは JSON 出力に含まれない。"""
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
         data = json.loads(result.output)
@@ -77,7 +77,7 @@ class TestParseCommandJsonOutput:
         assert "response_code" not in data["fields"]
 
     def test_parse_exits_zero_on_success(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -93,20 +93,20 @@ class TestParseCommandJsonOutput:
 
 class TestParseCommandTableOutput:
     def test_parse_table_output_shows_field_names(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--output", "table", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
         assert "primary_account_number" in result.output
 
     def test_parse_table_output_shows_field_values(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--output", "table", "--spec", _REAL_SPEC_PATH])
         assert "1234567890123456" in result.output
 
     def test_parse_table_shows_mti(self) -> None:
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--output", "table", "--spec", _REAL_SPEC_PATH])
         assert "0200" in result.output
@@ -114,7 +114,7 @@ class TestParseCommandTableOutput:
     def test_parse_table_partial_fields_no_crash(self) -> None:
         """一部フィールドのみのモデルでもテーブルが崩れない。"""
         model = Iso8583MessageModel(response_code="00")
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case(model=model)
             result = runner.invoke(app, ["parse", _DUMMY_HEX, "--output", "table", "--spec", _REAL_SPEC_PATH])
         assert result.exit_code == 0
@@ -128,21 +128,21 @@ class TestParseCommandTableOutput:
 class TestParseCommandStdinInput:
     def test_parse_stdin_hex_input(self) -> None:
         """hex 文字列を stdin から読み込む。"""
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", "--spec", _REAL_SPEC_PATH], input=_DUMMY_HEX)
         assert result.exit_code == 0
 
     def test_parse_stdin_hex_with_newline(self) -> None:
         """末尾に改行があっても正常に処理される。"""
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_build.return_value = _make_mock_use_case()
             result = runner.invoke(app, ["parse", "--spec", _REAL_SPEC_PATH], input=_DUMMY_HEX + "\n")
         assert result.exit_code == 0
 
     def test_parse_bytes_passed_to_use_case(self) -> None:
         """use case に正しい bytes が渡される。"""
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_uc = _make_mock_use_case()
             mock_build.return_value = mock_uc
             runner.invoke(app, ["parse", _DUMMY_HEX, "--spec", _REAL_SPEC_PATH])
@@ -170,7 +170,7 @@ class TestParseCommandErrors:
 
     def test_parse_decode_error_exits_4(self) -> None:
         from iso8583_types.core.exceptions import MessageDecodeError
-        with patch("iso8583_manager.presentation.cli.commands.parse.build_parse_use_case") as mock_build:
+        with patch("iso8583_cli.commands.parse.build_parse_use_case") as mock_build:
             mock_uc = MagicMock()
             mock_uc.execute.side_effect = MessageDecodeError("デコード失敗")
             mock_build.return_value = mock_uc

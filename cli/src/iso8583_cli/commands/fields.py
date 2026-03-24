@@ -13,8 +13,8 @@ from rich.console import Console
 from rich.table import Table
 
 from iso8583_types.core.exceptions import SpecError
-from iso8583_manager.presentation.cli.error_handler import handle_error
-from iso8583_manager.presentation.container import _DEFAULT_SPEC_PATH
+from iso8583_cli.error_handler import handle_error
+from iso8583_cli.container import _DEFAULT_SPEC_PATH
 
 logger = logging.getLogger(__name__)
 
