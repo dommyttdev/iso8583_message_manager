@@ -44,6 +44,8 @@ SCHEMAS_DIR = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / 
 FIELDS_JSON = SCHEMAS_DIR / "iso8583_fields.json"
 BASE_YAML = SCHEMAS_DIR / "openapi_base.yaml"
 OUTPUT_YAML = SCHEMAS_DIR / "generated" / "openapi.yaml"
+# api/web の契約として shared/openapi/ にも出力する
+SHARED_OUTPUT_YAML = ROOT_DIR / "shared" / "openapi" / "iso8583-api.yaml"
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -230,6 +232,12 @@ def generate_openapi() -> None:
             indent=2,
             width=120,
         )
+
+    # api/web の契約として shared/openapi/ にも同一内容を出力する
+    SHARED_OUTPUT_YAML.parent.mkdir(parents=True, exist_ok=True)
+    import shutil
+    shutil.copy2(OUTPUT_YAML, SHARED_OUTPUT_YAML)
+    print(f"[OK] 契約ファイルをコピーしました: {SHARED_OUTPUT_YAML}")
 
     mti_example = generated_sections["MtiTypesExample"]
     print(f"[OK] OpenAPI スキーマを生成しました: {OUTPUT_YAML}")

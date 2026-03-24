@@ -1,0 +1,691 @@
+# このファイルは generate_openapi.py により自動生成されます。
+# 直接編集せず、openapi_base.yaml を編集して再生成してください。
+#
+#   cd iso8583_message_manager
+#   python scripts/code_generator/generate_openapi.py
+
+openapi: 3.1.0
+info:
+  title: ISO 8583 Message Generator API
+  description: 'ISO 8583 財務トランザクションメッセージの生成・解析を行う REST API。
+
+    カード決済プロトコルの標準規格である ISO 8583 のメッセージを HTTP 経由で
+
+    エンコード・デコードできます。
+
+    '
+  version: 1.0.0
+  contact:
+    name: ISO 8583 Message Generator
+servers:
+- url: http://localhost:8000
+  description: ローカル開発サーバー
+- url: http://localhost:8000
+  description: ステージング環境（予定）
+tags:
+- name: health
+  description: ヘルスチェック
+- name: messages
+  description: ISO 8583 メッセージの生成・解析
+- name: metadata
+  description: フィールド定義・MTI タイプ情報
+paths:
+  /api/v1/health:
+    get:
+      operationId: get_health
+      tags:
+      - health
+      summary: ヘルスチェック
+      description: API サーバーの稼働状態を確認します。
+      responses:
+        '200':
+          description: 正常稼働中
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: ok
+                version: 1.0.0
+  /api/v1/fields:
+    get:
+      operationId: list_fields
+      tags:
+      - metadata
+      summary: 利用可能なフィールド一覧
+      description: 'ISO 8583 メッセージで使用できるフィールドの一覧を返します。
+
+        各フィールドには、フィールド番号・名称・データ型・最大長などが含まれます。
+
+        '
+      responses:
+        '200':
+          description: フィールド一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldListResponse'
+              example:
+                fields:
+                - field_id: '2'
+                  name: primary_account_number
+                  description: Primary Account Number (PAN)
+                  data_type: n
+                  len_type: variable
+                  max_len: 19
+                - field_id: '3'
+                  name: processing_code
+                  description: Processing Code
+                  data_type: n
+                  len_type: fixed
+                  max_len: 6
+                - field_id: '4'
+                  name: amount_transaction
+                  description: Amount, Transaction
+                  data_type: n
+                  len_type: fixed
+                  max_len: 12
+                - field_id: '7'
+                  name: transmission_date_and_time
+                  description: Transmission Date and Time
+                  data_type: n
+                  len_type: fixed
+                  max_len: 10
+                - field_id: '11'
+                  name: systems_trace_audit_number
+                  description: Systems Trace Audit Number
+                  data_type: n
+                  len_type: fixed
+                  max_len: 6
+                - field_id: '39'
+                  name: response_code
+                  description: Response Code
+                  data_type: an
+                  len_type: fixed
+                  max_len: 2
+  /api/v1/mti-types:
+    get:
+      operationId: list_mti_types
+      tags:
+      - metadata
+      summary: MTI タイプ一覧
+      description: 'MTI (Message Type Identifier) を構成する4つのコンポーネント
+
+        （バージョン・クラス・ファンクション・オリジン）の選択肢と説明を返します。
+
+        '
+      responses:
+        '200':
+          description: MTI タイプ一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MtiTypesResponse'
+              example:
+                versions:
+                - code: '0'
+                  description: ISO 8583-1:1987年版
+                - code: '1'
+                  description: ISO 8583-2:1993年版
+                - code: '2'
+                  description: ISO 8583-1:2003年版
+                - code: '9'
+                  description: 個社使用
+                classes:
+                - code: '1'
+                  description: オーソリゼーション
+                - code: '2'
+                  description: ファイナンシャル
+                - code: '3'
+                  description: ファイル更新
+                - code: '4'
+                  description: 取消
+                - code: '5'
+                  description: 交換
+                - code: '6'
+                  description: 管理
+                - code: '7'
+                  description: 課金
+                - code: '8'
+                  description: ネットワーク管理
+                functions:
+                - code: '0'
+                  description: 要求
+                - code: '1'
+                  description: 要求に対する応答
+                - code: '2'
+                  description: アドバイス
+                - code: '3'
+                  description: アドバイスに対する応答
+                - code: '4'
+                  description: 通知
+                - code: '8'
+                  description: 応答の認証
+                - code: '9'
+                  description: ネガティブな認証
+                origins:
+                - code: '0'
+                  description: アクワイアラ
+                - code: '1'
+                  description: アクワイアラ（リピート）
+                - code: '2'
+                  description: イシュア
+                - code: '3'
+                  description: イシュア（リピート）
+                - code: '4'
+                  description: その他
+                - code: '5'
+                  description: その他（リピート）
+  /api/v1/messages/generate:
+    post:
+      operationId: generate_message
+      tags:
+      - messages
+      summary: ISO 8583 メッセージ生成（エンコード）
+      description: 'MTI とフィールド値を指定して ISO 8583 バイナリメッセージを生成します。
+
+        出力フォーマットは `hex`（16進数文字列）または `base64` を選択できます。
+
+        '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+            examples:
+              authorization_request:
+                summary: オーソリゼーションリクエスト (MTI 0100)
+                value:
+                  mti: '0100'
+                  fields:
+                    primary_account_number: '4111111111111111'
+                    processing_code: '000000'
+                    amount_transaction: '000000010000'
+                    transmission_date_and_time: 0319153000
+                    systems_trace_audit_number: '000001'
+                  output_format: hex
+              financial_request:
+                summary: ファイナンシャルリクエスト (MTI 0200)
+                value:
+                  mti: '0200'
+                  fields:
+                    primary_account_number: '5500005555555559'
+                    processing_code: '000000'
+                    amount_transaction: '000000050000'
+                    systems_trace_audit_number: '000042'
+                  output_format: base64
+      responses:
+        '200':
+          description: メッセージ生成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+              example:
+                mti: '0200'
+                encoded_message: '0200421000010000001600000000050000000042'
+                output_format: hex
+                byte_length: 42
+        '400':
+          description: 不正なリクエスト（無効な MTI・フィールド値違反）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_mti:
+                  summary: 無効な MTI
+                  value:
+                    error_code: INVALID_MTI
+                    message: MTI '9999' は無効です。
+                    detail: MtiClass '9' は定義されていません。
+                encode_error:
+                  summary: エンコードエラー
+                  value:
+                    error_code: MESSAGE_ENCODE_ERROR
+                    message: メッセージのエンコードに失敗しました。
+                    detail: 'Field 2: value ''123'' exceeds max_len 19.'
+        '422':
+          description: バリデーションエラー（リクエストボディのスキーマ違反）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /api/v1/messages/parse:
+    post:
+      operationId: parse_message
+      tags:
+      - messages
+      summary: ISO 8583 メッセージ解析（デコード）
+      description: 'ISO 8583 バイナリメッセージを解析して MTI とフィールド値を抽出します。
+
+        入力フォーマットは `hex`（16進数文字列）または `base64` を指定してください。
+
+        '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParseRequest'
+            examples:
+              hex_message:
+                summary: 16進数形式のメッセージ
+                value:
+                  encoded_message: '0200421000010000001600000000050000000042'
+                  input_format: hex
+              base64_message:
+                summary: Base64 形式のメッセージ
+                value:
+                  encoded_message: AgBCEAAQAAABYAAAAAAAA1AAAA==
+                  input_format: base64
+      responses:
+        '200':
+          description: メッセージ解析成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParseResponse'
+              example:
+                mti: '0200'
+                mti_description:
+                  version: ISO 8583-1:1987
+                  class: Financial
+                  function: Request
+                  origin: Acquirer
+                fields:
+                  primary_account_number: '5500005555555559'
+                  processing_code: '000000'
+                  amount_transaction: '000000050000'
+                  systems_trace_audit_number: '000042'
+        '400':
+          description: 不正なリクエスト（デコード失敗・無効なフォーマット）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                decode_error:
+                  summary: デコードエラー
+                  value:
+                    error_code: MESSAGE_DECODE_ERROR
+                    message: メッセージのデコードに失敗しました。
+                    detail: Unexpected end of message data.
+                invalid_format:
+                  summary: 不正なフォーマット
+                  value:
+                    error_code: INVALID_FORMAT
+                    message: 入力フォーマット 'hex' として解釈できませんでした。
+                    detail: Non-hexadecimal character found at position 4.
+        '422':
+          description: バリデーションエラー（リクエストボディのスキーマ違反）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+      - status
+      - version
+      properties:
+        status:
+          type: string
+          enum:
+          - ok
+          description: サーバー状態
+        version:
+          type: string
+          description: API バージョン
+          example: 1.0.0
+    FieldDefinition:
+      type: object
+      required:
+      - field_id
+      - name
+      - description
+      - data_type
+      - len_type
+      - max_len
+      properties:
+        field_id:
+          type: string
+          description: ISO 8583 フィールド番号（"2"〜"128"）
+          example: '2'
+        name:
+          type: string
+          description: フィールドのプロパティ名（スネークケース）
+          example: primary_account_number
+        description:
+          type: string
+          description: フィールドの説明
+          example: Primary Account Number (PAN)
+        data_type:
+          type: string
+          description: 'データ型コード
+
+            - `n`: 数値 (numeric)
+
+            - `a`: アルファベット (alpha)
+
+            - `an`: 英数字 (alphanumeric)
+
+            - `ans`: 英数字・特殊文字 (alphanumeric special)
+
+            - `b`: バイナリ (binary)
+
+            '
+          enum:
+          - n
+          - a
+          - an
+          - ans
+          - b
+          example: n
+        len_type:
+          type: string
+          description: '長さタイプ
+
+            - `fixed`: 固定長
+
+            - `variable`: 可変長（LL/LLL プレフィックス付き）
+
+            '
+          enum:
+          - fixed
+          - variable
+          example: variable
+        max_len:
+          type: integer
+          description: 最大文字長
+          example: 19
+    FieldListResponse:
+      type: object
+      required:
+      - fields
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldDefinition'
+    MtiCodeEntry:
+      type: object
+      required:
+      - code
+      - description
+      properties:
+        code:
+          type: string
+          description: コード値（1桁）
+          example: '0'
+        description:
+          type: string
+          description: 説明
+          example: ISO 8583-1:1987
+    MtiTypesResponse:
+      type: object
+      required:
+      - versions
+      - classes
+      - functions
+      - origins
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MtiCodeEntry'
+          description: MTI バージョン（第1桁）
+        classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/MtiCodeEntry'
+          description: MTI クラス（第2桁）
+        functions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MtiCodeEntry'
+          description: MTI ファンクション（第3桁）
+        origins:
+          type: array
+          items:
+            $ref: '#/components/schemas/MtiCodeEntry'
+          description: MTI オリジン（第4桁）
+    MessageFields:
+      type: object
+      description: 'ISO 8583 フィールドの値マップ。
+
+        キーはフィールドのプロパティ名（スネークケース）、値は文字列。
+
+        利用可能なキーは `GET /api/v1/fields` で確認できます。
+
+        このスキーマは iso8583_fields.json から自動生成されます。'
+      additionalProperties: false
+      properties:
+        primary_account_number:
+          type: string
+          description: Primary Account Number (PAN) [フィールド 2, 数値 (numeric), 可変長, 最大19桁]
+          maxLength: 19
+          minLength: 1
+          pattern: ^[0-9]{1,19}$
+        processing_code:
+          type: string
+          description: Processing Code [フィールド 3, 数値 (numeric), 固定長, 最大6桁]
+          maxLength: 6
+          minLength: 6
+          pattern: ^[0-9]{6}$
+        amount_transaction:
+          type: string
+          description: Amount, Transaction [フィールド 4, 数値 (numeric), 固定長, 最大12桁]
+          maxLength: 12
+          minLength: 12
+          pattern: ^[0-9]{12}$
+        transmission_date_and_time:
+          type: string
+          description: Transmission Date and Time [フィールド 7, 数値 (numeric), 固定長, 最大10桁]
+          maxLength: 10
+          minLength: 10
+          pattern: ^[0-9]{10}$
+        systems_trace_audit_number:
+          type: string
+          description: Systems Trace Audit Number [フィールド 11, 数値 (numeric), 固定長, 最大6桁]
+          maxLength: 6
+          minLength: 6
+          pattern: ^[0-9]{6}$
+        response_code:
+          type: string
+          description: Response Code [フィールド 39, 英数字 (alphanumeric), 固定長, 最大2桁]
+          maxLength: 2
+          minLength: 2
+          pattern: ^[A-Za-z0-9]{2}$
+    OutputFormat:
+      type: string
+      enum:
+      - hex
+      - base64
+      default: hex
+      description: 'エンコードされたメッセージの出力フォーマット
+
+        - `hex`: 16進数文字列（例: "0200421000..."）
+
+        - `base64`: Base64 文字列
+
+        '
+    InputFormat:
+      type: string
+      enum:
+      - hex
+      - base64
+      default: hex
+      description: '入力メッセージのフォーマット
+
+        - `hex`: 16進数文字列
+
+        - `base64`: Base64 文字列
+
+        '
+    GenerateRequest:
+      type: object
+      required:
+      - mti
+      - fields
+      properties:
+        mti:
+          type: string
+          pattern: ^[0-9]{4}$
+          description: 'MTI（Message Type Identifier）。4桁の数字文字列。
+
+            例: "0100" (Authorization Request), "0200" (Financial Request)
+
+            '
+          example: '0200'
+        fields:
+          $ref: '#/components/schemas/MessageFields'
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+    GenerateResponse:
+      type: object
+      required:
+      - mti
+      - encoded_message
+      - output_format
+      - byte_length
+      properties:
+        mti:
+          type: string
+          description: 使用された MTI
+          example: '0200'
+        encoded_message:
+          type: string
+          description: エンコードされたメッセージ（output_format に応じた形式）
+          example: '0200421000010000001600000000050000000042'
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        byte_length:
+          type: integer
+          description: エンコード後のメッセージのバイト長
+          example: 42
+    MtiDescription:
+      type: object
+      required:
+      - version
+      - class
+      - function
+      - origin
+      properties:
+        version:
+          type: string
+          description: MTI バージョンの説明
+          example: ISO 8583-1:1987
+        class:
+          type: string
+          description: MTI クラスの説明
+          example: Financial
+        function:
+          type: string
+          description: MTI ファンクションの説明
+          example: Request
+        origin:
+          type: string
+          description: MTI オリジンの説明
+          example: Acquirer
+    ParseRequest:
+      type: object
+      required:
+      - encoded_message
+      properties:
+        encoded_message:
+          type: string
+          description: エンコードされた ISO 8583 メッセージ
+          example: '0200421000010000001600000000050000000042'
+        input_format:
+          $ref: '#/components/schemas/InputFormat'
+    ParseResponse:
+      type: object
+      required:
+      - mti
+      - mti_description
+      - fields
+      properties:
+        mti:
+          type: string
+          description: 解析された MTI
+          example: '0200'
+        mti_description:
+          $ref: '#/components/schemas/MtiDescription'
+        fields:
+          $ref: '#/components/schemas/MessageFields'
+    ErrorCode:
+      type: string
+      enum:
+      - INVALID_MTI
+      - MESSAGE_ENCODE_ERROR
+      - MESSAGE_DECODE_ERROR
+      - INVALID_FORMAT
+      - SPEC_ERROR
+      - INTERNAL_ERROR
+      description: 'エラーコード
+
+        - `INVALID_MTI`: MTI の値が不正
+
+        - `MESSAGE_ENCODE_ERROR`: メッセージのエンコードに失敗
+
+        - `MESSAGE_DECODE_ERROR`: メッセージのデコードに失敗
+
+        - `INVALID_FORMAT`: 入力フォーマットが不正（不正な hex/base64 文字列など）
+
+        - `SPEC_ERROR`: スペックファイルの読み込み・形式エラー
+
+        - `INTERNAL_ERROR`: 予期しない内部エラー
+
+        '
+    ErrorResponse:
+      type: object
+      required:
+      - error_code
+      - message
+      properties:
+        error_code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+          description: エラーの概要（日本語）
+          example: MTI '9999' は無効です。
+        detail:
+          type: string
+          description: 詳細情報（任意）
+          example: MtiClass '9' は定義されていません。
+    ValidationErrorDetail:
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          description: エラーが発生したフィールドのパス
+          example:
+          - body
+          - mti
+        msg:
+          type: string
+          description: バリデーションエラーのメッセージ
+          example: String should match pattern '^[0-9]{4}$'
+        type:
+          type: string
+          description: バリデーションエラータイプ
+          example: string_pattern_mismatch
+    ValidationErrorResponse:
+      type: object
+      required:
+      - detail
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
