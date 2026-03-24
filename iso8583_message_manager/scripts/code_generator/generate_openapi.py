@@ -35,14 +35,15 @@ except ImportError:
 # Paths
 # ---------------------------------------------------------------------------
 APP_DIR = Path(__file__).parent.parent.parent          # iso8583_message_manager/
+ROOT_DIR = APP_DIR.parent                              # d:/Projects/Cards/
 
 # mti.py を直接インポートするため src/ をパスに追加（venv 不要）
-sys.path.insert(0, str(APP_DIR / "src"))
+sys.path.insert(0, str(ROOT_DIR / "packages" / "iso8583-types" / "src"))
 from iso8583_types.core.models.mti import MtiVersion, MtiClass, MtiFunction, MtiOrigin  # noqa: E402
-SCHEMAS_DIR = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas"
+SCHEMAS_DIR = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
 FIELDS_JSON = SCHEMAS_DIR / "iso8583_fields.json"
-BASE_YAML = SCHEMAS_DIR / "openapi_base.yaml"          # ソースファイル: data/schemas/ に配置
-OUTPUT_YAML = SCHEMAS_DIR / "generated" / "openapi.yaml"  # 生成成果物: data/schemas/generated/ に配置
+BASE_YAML = SCHEMAS_DIR / "openapi_base.yaml"
+OUTPUT_YAML = SCHEMAS_DIR / "generated" / "openapi.yaml"
 
 # ---------------------------------------------------------------------------
 # Constants

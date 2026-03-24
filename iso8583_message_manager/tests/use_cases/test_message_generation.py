@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock
-from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
+from iso8583_core.use_cases.message_generation import GenerateMessageUseCase
 from iso8583_types.core.interfaces.iso_ports import IMessageGenerator
 from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 from iso8583_types.core.models.mti import Mti

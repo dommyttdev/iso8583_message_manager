@@ -10,15 +10,15 @@ import os
 from importlib.resources import files
 from pathlib import Path
 
-from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
-from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
-from iso8583_manager.use_cases.message_parsing import ParseMessageUseCase
+from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
+from iso8583_core.use_cases.message_generation import GenerateMessageUseCase
+from iso8583_core.use_cases.message_parsing import ParseMessageUseCase
 
 logger = logging.getLogger(__name__)
 
 # importlib.resources 経由でパッケージデータを参照（インストール後も正しく動作）
 _DEFAULT_SPEC_PATH: Path = Path(
-    str(files("iso8583_manager.data.schemas") / "iso8583_fields.json")
+    str(files("iso8583_core.data.schemas") / "iso8583_fields.json")
 )
 
 

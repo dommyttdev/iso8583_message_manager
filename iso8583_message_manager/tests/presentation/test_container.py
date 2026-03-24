@@ -13,10 +13,10 @@ from iso8583_manager.presentation.container import (
     build_generate_use_case,
     build_parse_use_case,
 )
-from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
-from iso8583_manager.use_cases.message_parsing import ParseMessageUseCase
+from iso8583_core.use_cases.message_generation import GenerateMessageUseCase
+from iso8583_core.use_cases.message_parsing import ParseMessageUseCase
 
-_REAL_SPEC_PATH = str(_pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json")
+_REAL_SPEC_PATH = str(_pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json")
 
 
 # ==============================================================================

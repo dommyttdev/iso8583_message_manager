@@ -1,6 +1,6 @@
 from importlib.resources import files as _pkg_files
-from iso8583_manager.use_cases.message_generation import GenerateMessageUseCase
-from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
+from iso8583_core.use_cases.message_generation import GenerateMessageUseCase
+from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_types.core.models.generated.iso_models import Iso8583MessageModel
 from iso8583_types.core.models.mti import Mti
 
@@ -10,7 +10,7 @@ def test_integration_generate_and_parse_success():
     モデルの生成からバイナリ化、そして再度パースできるかまでを一貫して検証する。
     """
     # 1. 依存関係の組み立て (DI: Dependency Injection)
-    json_path = _pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json"
+    json_path = _pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json"
     adapter = PyIso8583Adapter(spec_json_path=str(json_path))
     use_case = GenerateMessageUseCase(message_generator=adapter)
     

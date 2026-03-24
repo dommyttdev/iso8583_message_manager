@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, mock_open, MagicMock
 import logging
-from iso8583_manager.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
+from iso8583_core.infrastructure.pyiso8583_adapter.wrapper import PyIso8583Adapter
 from iso8583_types.core.exceptions import SpecError, MessageEncodeError, MessageDecodeError
 from iso8583_types.core.models.mti import Mti, MtiVersion, MtiClass, MtiFunction, MtiOrigin
 
@@ -26,7 +26,7 @@ def test_generate_raises_message_encode_error_on_pyiso8583_failure():
     model_mock = MagicMock()
     model_mock.to_iso_dict.return_value = {"2": "123456"}
 
-    with patch("iso8583_manager.infrastructure.pyiso8583_adapter.wrapper.iso8583.encode", side_effect=Exception("Encoding failed")):
+    with patch("iso8583_core.infrastructure.pyiso8583_adapter.wrapper.iso8583.encode", side_effect=Exception("Encoding failed")):
         with pytest.raises(MessageEncodeError) as excinfo:
             adapter.generate(mti, model_mock)
         assert "エンコードに失敗しました" in str(excinfo.value)
@@ -36,7 +36,7 @@ def test_parse_raises_message_decode_error_on_pyiso8583_failure():
         adapter = PyIso8583Adapter("dummy.json")
     
     from unittest.mock import MagicMock
-    with patch("iso8583_manager.infrastructure.pyiso8583_adapter.wrapper.iso8583.decode", side_effect=Exception("Decoding failed")):
+    with patch("iso8583_core.infrastructure.pyiso8583_adapter.wrapper.iso8583.decode", side_effect=Exception("Decoding failed")):
         with pytest.raises(MessageDecodeError) as excinfo:
             adapter.parse(b"dummy", MagicMock())
         assert "デコードに失敗しました" in str(excinfo.value)

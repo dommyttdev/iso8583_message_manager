@@ -18,7 +18,8 @@ sys.path.insert(0, str(APP_DIR / "scripts" / "code_generator"))
 import generate_models as gen_mod  # noqa: E402
 from generate_models import generate_models  # noqa: E402
 
-_FIELDS_JSON = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas" / "iso8583_fields.json"
+ROOT_DIR = APP_DIR.parent  # d:/Projects/Cards/
+_FIELDS_JSON = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas" / "iso8583_fields.json"
 
 
 @pytest.fixture(scope="module")

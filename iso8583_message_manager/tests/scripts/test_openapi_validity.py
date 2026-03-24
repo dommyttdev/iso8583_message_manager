@@ -14,8 +14,10 @@ APP_DIR = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(APP_DIR / "src"))
 sys.path.insert(0, str(APP_DIR / "scripts" / "code_generator"))
 
-_OUTPUT_YAML = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas" / "generated" / "openapi.yaml"
-_FIELDS_JSON = APP_DIR / "src" / "iso8583_manager" / "data" / "schemas" / "iso8583_fields.json"
+ROOT_DIR = APP_DIR.parent  # d:/Projects/Cards/
+_CORE_SCHEMAS = ROOT_DIR / "packages" / "iso8583-core" / "src" / "iso8583_core" / "data" / "schemas"
+_OUTPUT_YAML = _CORE_SCHEMAS / "generated" / "openapi.yaml"
+_FIELDS_JSON = _CORE_SCHEMAS / "iso8583_fields.json"
 
 
 @pytest.fixture(scope="module")

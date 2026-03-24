@@ -15,7 +15,7 @@ from iso8583_manager.presentation.cli.app import app
 
 runner = CliRunner()
 
-_REAL_SPEC_PATH = str(_pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json")
+_REAL_SPEC_PATH = str(_pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json")
 
 _MOCK_BYTES = bytearray(b"\x30\x32\x30\x30DUMMY_ISO_BYTES")
 _MOCK_HEX = _MOCK_BYTES.hex()

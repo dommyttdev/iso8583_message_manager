@@ -11,7 +11,7 @@ from iso8583_manager.presentation.cli.app import app
 
 runner = CliRunner()
 
-_REAL_SPEC_PATH = str(_pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json")
+_REAL_SPEC_PATH = str(_pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json")
 
 
 # ==============================================================================

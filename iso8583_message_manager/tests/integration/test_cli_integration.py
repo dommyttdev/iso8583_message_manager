@@ -14,7 +14,7 @@ from iso8583_manager.presentation.cli.app import app
 
 runner = CliRunner()
 
-_REAL_SPEC_PATH = str(_pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json")
+_REAL_SPEC_PATH = str(_pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json")
 
 # generate → parse ラウンドトリップ用の共通フィールド
 _ROUNDTRIP_FIELDS = [
@@ -128,7 +128,7 @@ class TestFieldsCommandIntegration:
         """出力フィールド数と spec 定義数が一致する。"""
         import json as _json
         spec_data = _json.loads(
-            (_pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json").read_text(encoding="utf-8")
+            (_pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json").read_text(encoding="utf-8")
         )
 
         result = runner.invoke(app, ["fields", "--spec", _REAL_SPEC_PATH])

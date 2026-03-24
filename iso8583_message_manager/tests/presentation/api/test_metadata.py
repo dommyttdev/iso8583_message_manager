@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from iso8583_manager.presentation.api.app import app
 from iso8583_manager.presentation.api.routers.metadata import _get_fields_data
 
-_FIELDS_JSON = _pkg_files("iso8583_manager.data.schemas") / "iso8583_fields.json"
+_FIELDS_JSON = _pkg_files("iso8583_core.data.schemas") / "iso8583_fields.json"
 
 
 @pytest.fixture(autouse=True)
