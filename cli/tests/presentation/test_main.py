@@ -4,9 +4,15 @@ __main__.py（統合エントリポイント）のユニットテスト。
 iso8583-msg cli|api|web サブコマンドが正しく登録されていることを検証する。
 """
 import importlib
+import re
 
 import pytest
 from typer.testing import CliRunner
+
+
+def _plain(text: str) -> str:
+    """ANSI エスケープシーケンスを除去してプレーンテキストを返す。"""
+    return re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", text)
 
 
 class TestMainModule:
@@ -65,16 +71,18 @@ class TestMainSubcommands:
         from iso8583_cli.__main__ import app
         result = runner.invoke(app, ["api", "--help"])
         assert result.exit_code == 0
-        assert "--host" in result.output
-        assert "--port" in result.output
+        plain = _plain(result.output)
+        assert "--host" in plain
+        assert "--port" in plain
 
     def test_main_08_web_subcommand_accepts_host_port(self, runner: CliRunner) -> None:
         """web --help で --host / --port オプションが表示されること"""
         from iso8583_cli.__main__ import app
         result = runner.invoke(app, ["web", "--help"])
         assert result.exit_code == 0
-        assert "--host" in result.output
-        assert "--port" in result.output
+        plain = _plain(result.output)
+        assert "--host" in plain
+        assert "--port" in plain
 
     def test_main_09_api_missing_dep_shows_helpful_error(
         self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
